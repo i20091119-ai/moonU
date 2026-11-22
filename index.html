@@ -89,10 +89,49 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 .fb{border-radius:14px;padding:11px 14px;background:var(--ok-soft);line-height:1.55}
 .fb b{color:var(--ok)}
 .fb.warn{background:var(--warn-soft)}.fb.warn b{color:var(--warn)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.cards div{aspect-ratio:1.15;border-radius:12px;background:#fff;border:1.5px dashed var(--pink);display:grid;place-items:center;font-size:12px;color:#B9A4B2;text-align:center;padding:4px;line-height:1.25}
-.cards div.got{background:var(--soft);border:1.5px solid var(--line);color:var(--ink);font-weight:700;font-size:13px}
-.cards div.got small{display:block;color:var(--pri);font-size:11px;font-weight:500}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.slot{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;color:#9C8A96;text-align:center;line-height:1.25}
+.slot .ph{width:100%;aspect-ratio:1;border-radius:12px;background:#fff center/cover no-repeat;border:1.5px dashed var(--pink);display:grid;place-items:center;font-weight:700;font-size:16px;color:#C9B4C2}
+.slot.now .ph{border:2px solid var(--pri);color:var(--pri);box-shadow:0 0 0 4px var(--soft)}
+.slot.got{color:var(--ink);font-weight:700}.slot.got .ph{border:2px solid #fff;box-shadow:0 2px 0 var(--edge),0 4px 10px rgba(60,40,60,.14)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cmp figure{margin:0;display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub);text-align:center}
+.cmp img{width:100%;aspect-ratio:1.6;object-fit:cover;border-radius:12px;display:block}
+/* 정리: 문장에 내가 찍은 사진 붙이기 */
+.pins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pin{display:flex;flex-direction:column;align-items:center;gap:5px;font-weight:700;text-align:center}
+.pin .ph{width:100%;aspect-ratio:1.35;border-radius:14px;border:2px dashed var(--ans);background:#fff center/cover no-repeat;display:grid;place-items:center;color:#9DBDF0;font-size:var(--fs-sub);font-weight:500;cursor:pointer}
+.pin.ok .ph{border:3px solid #fff;box-shadow:0 2px 0 var(--edge),0 6px 14px rgba(60,40,60,.16);cursor:default}
+.pin.no .ph{animation:shake .3s;border-color:var(--warn)}
+.tray{display:flex;gap:12px;flex-wrap:wrap;align-items:center;min-height:84px}
+.tray img{width:clamp(84px,11vw,120px);aspect-ratio:1;object-fit:cover;border-radius:12px;border:3px solid #fff;box-shadow:0 2px 0 var(--edge),0 6px 14px rgba(60,40,60,.16);cursor:grab;touch-action:none}
+.tray img.sel{outline:4px solid var(--pri);outline-offset:2px}
+.dragimg{position:fixed;z-index:95;width:110px;height:110px;object-fit:cover;border-radius:12px;border:3px solid #fff;box-shadow:0 10px 24px rgba(0,0,0,.35);pointer-events:none;transform:translate(-50%,-50%) rotate(-4deg)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs figure{margin:0;background:var(--soft2);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.vs figure img{width:100%;max-height:22vh;object-fit:contain;border-radius:10px;background:#fff}
+.vs .tg{font-size:var(--fs-sub);font-weight:700;color:var(--pri)}
+/* 관찰 1: 망원경 시야(둥근 테두리), 초점 손잡이, 달 사진과 달 이름표 */
+#scope{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0,transparent calc(var(--er) - 1px),#8b8f9c var(--er),#3a3d47 calc(var(--er) + 9px),#07080d calc(var(--er) + 11px))}
+#scope::before,#scope::after{content:'';position:absolute;left:50%;top:50%;background:rgba(255,255,255,.55)}
+#scope::before{width:34px;height:2px;margin:-1px 0 0 -17px}#scope::after{width:2px;height:34px;margin:-17px 0 0 -1px}
+#scope.aimed::before,#scope.aimed::after{display:none}
+#focusBar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:12px;width:min(78%,460px);padding:8px 18px;border-radius:999px;background:#fff;font-weight:700;font-size:var(--fs-sub);box-shadow:0 4px 0 rgba(0,0,0,.4)}
+#focusBar input{flex:1;height:34px;accent-color:#BC499B;touch-action:pan-x}
+.duo{position:absolute;top:10px;z-index:3;transform:translateX(-50%);padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:700;font-size:var(--fs-sub);white-space:nowrap;pointer-events:none}
+/* 관찰 2: 사진기 틀과 찍기 단추 */
+#camFrame{position:absolute;left:50%;top:50%;width:var(--fs);height:var(--fs);transform:translate(-50%,-50%);pointer-events:none;z-index:2;display:none}
+#camFrame.show{display:block}
+#camFrame i{position:absolute;width:22%;height:22%;border:4px solid #fff;filter:drop-shadow(0 0 3px rgba(0,0,0,.8))}
+#camFrame i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-radius:12px 0 0 0}
+#camFrame i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-radius:0 12px 0 0}
+#camFrame i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0;border-radius:0 0 0 12px}
+#camFrame i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 12px 0}
+#camFrame b{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid rgba(255,255,255,.85)}
+#shoot{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:4;display:none;align-items:center;gap:.5em;min-height:54px;padding:0 26px 0 20px;border-radius:999px;background:#fff;color:var(--ink);font-weight:700;font-size:var(--fs-inst);box-shadow:0 4px 0 rgba(0,0,0,.4)}
+#shoot.show{display:flex}#shoot svg{color:var(--pri);width:1.4em;height:1.4em}
+#shoot:active{transform:translateX(-50%) translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.4)}
+#flashS{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5;transition:opacity .3s}
+.flyimg{position:fixed;z-index:95;border-radius:12px;border:3px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.4);transition:all .55s cubic-bezier(.3,.8,.3,1);pointer-events:none}
 textarea,input[type=text]{font-family:var(--fb);font-weight:500;font-size:var(--fs-body);border:1.5px solid var(--line);border-radius:14px;padding:11px 13px;width:100%;background:#fff;color:var(--ink);-webkit-user-select:text;user-select:text}
 textarea:focus,input[type=text]:focus{outline:3px solid var(--soft);border-color:var(--pri)}
 textarea{min-height:76px;resize:none}
@@ -123,7 +162,7 @@ textarea{min-height:76px;resize:none}
 .bank button{min-height:46px;background:#fff;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:0 18px;font-size:var(--fs-body);font-weight:700}
 .bank button:hover{border-color:var(--pri)}
 .bank button.used{opacity:.3;pointer-events:none}
-.pick{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .pick button{background:var(--soft2);border:1.5px solid var(--line);border-radius:20px;padding:20px;text-align:left;font-size:var(--fs-body);font-weight:500;color:var(--ink);line-height:1.55}
 .pick button small{display:block;font-weight:700;color:var(--pri);font-size:var(--fs-sub)}
 .pick button b{display:block;font-family:var(--fd);font-weight:400;font-size:clamp(19px,1.6vw,26px);margin:2px 0 6px}
@@ -141,11 +180,19 @@ textarea{min-height:76px;resize:none}
 #journal h3{font-family:var(--fd);font-weight:400;margin:0;font-size:clamp(17px,1.4vw,22px)}
 #journal small{color:var(--sub)}
 #journal ul{margin:0;padding-left:20px;line-height:1.7}
+.jshots{display:flex;gap:8px;flex-wrap:wrap}.jshots figure{margin:0;width:112px;font-size:12px;color:var(--sub);text-align:center}.jshots img{width:100%!important;max-width:none!important}
 #journal img{max-width:240px;border-radius:14px;border:1.5px solid var(--line)}
 .pens{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .pens button[data-c]{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
 .pens button.on{box-shadow:0 0 0 3px var(--ink)}
-#impact{width:100%;height:min(340px,42vh);border-radius:18px;background:var(--sky);display:block;touch-action:none;cursor:pointer}
+/* 더 해 보기 B: 달 모형 빚기 */
+#clayPad{position:absolute;z-index:2;touch-action:none;cursor:crosshair}
+#clayPad.off{pointer-events:none}
+#clayBar{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:4;display:flex;gap:6px;padding:6px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 4px 0 rgba(0,0,0,.4);max-width:calc(100% - 150px)}
+#clayBar button{min-height:42px;padding:0 14px;border-radius:999px;font-weight:700;font-size:var(--fs-sub);color:var(--ink);white-space:nowrap}
+#clayBar button.on{background:var(--pri);color:#fff}
+#clayBar button[disabled]{opacity:.32;pointer-events:none}
+#clayBar button.new{animation:halo 1.4s ease-in-out infinite}
 /* 무대 위 상태 칩, 초기화 */
 #viewChip{position:absolute;right:14px;top:14px;z-index:4;display:none;align-items:center;gap:.6em;padding:8px 16px;border-radius:999px;background:#fff;font-size:var(--fs-sub);color:var(--sub);box-shadow:0 3px 0 rgba(0,0,0,.35)}
 #viewChip.show{display:flex}#viewChip b{color:var(--ans)}#viewChip.far b{color:var(--warn)}
@@ -166,6 +213,45 @@ textarea{min-height:76px;resize:none}
 .rc .tg{font-size:var(--fs-sub);font-weight:700;color:var(--pri)}
 .cup{align-self:center;width:76px;height:76px;border-radius:50%;background:var(--soft);color:var(--pri);display:grid;place-items:center}.cup svg{width:38px;height:38px}
 #pop .box.center{text-align:center;align-items:center}#pop .box.center h2{padding:0}
+/* 더 해 보기 D: 달 사진 찍기. 스마트폰 화면은 갤럭시 기본 카메라의 프로 모드 배치를 본뜸 */
+#photoUI{position:absolute;inset:0;z-index:2;touch-action:none;overflow:hidden}
+#photoUI .mask{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% var(--cy),transparent 0,transparent calc(var(--er) - 1px),#8b8f9c var(--er),#3a3d47 calc(var(--er) + 9px),#07080d calc(var(--er) + 11px))}
+#photoUI .lbl{position:absolute;left:50%;top:max(4px,calc(var(--cy) - var(--er) - 34px));transform:translateX(-50%);color:#c9cbd6;font-size:var(--fs-sub);white-space:nowrap;pointer-events:none}
+.phone{position:absolute;width:var(--pw);height:var(--ph);border-radius:1.6em;background:#0b0c10;border:3px solid #4a4e5a;box-shadow:0 14px 30px rgba(0,0,0,.6);cursor:grab;touch-action:none;color:#fff;font-size:calc(var(--ph)/34);transition:left .45s,top .45s,width .45s,height .45s,font-size .45s}
+.phone.drag{transition:none}
+.phone.hint{animation:phhint 1.4s ease-in-out infinite}
+.phone.big{cursor:default}
+.phone .cam{position:absolute;left:50%;top:9px;width:34px;height:34px;margin-left:-17px;border-radius:50%;border:3px dashed var(--key);box-shadow:0 0 0 3px rgba(0,0,0,.4)}
+.phone .cam::after{content:'카메라';position:absolute;left:42px;top:5px;color:var(--key);font-size:12px;font-weight:700;white-space:nowrap}
+.phone.big .cam{display:none}
+.phone canvas{position:absolute;left:4%;top:52px;width:92%;height:calc(100% - 70px);border-radius:.6em;background:#000;transition:filter .3s}
+.phone.big{font-size:clamp(12px,calc(var(--ph)/15),20px);border-radius:1.2em}
+.phone.big canvas{left:1.2%;top:4%;height:92%;width:calc(var(--ph)*.92)}
+.pui{position:absolute;left:calc(var(--ph)*.92 + 2.4%);right:1.5%;top:0;bottom:0;display:none;flex-direction:column;align-items:center;justify-content:space-evenly;padding:2% 0}
+.phone.big .pui{display:flex}
+.prow{width:100%;display:none;justify-content:space-between}
+.phone.pro .prow{display:flex}
+.prow button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1em;padding:.3em 0;border-radius:.6em;color:#fff;font-size:.82em;line-height:1.2}
+.prow button small{font-size:.9em;opacity:.8;letter-spacing:.04em}
+.prow button b{font-weight:700}
+.prow button.on{color:var(--key)}
+.prow button.tgt,.pmode button.tgt{box-shadow:0 0 0 2px var(--key);animation:tgt 1.1s ease-in-out infinite}
+.prow button[disabled]{opacity:.45}
+.pslide{width:100%;height:2.4em;display:flex;align-items:center;gap:.6em;visibility:hidden}
+.pslide.on{visibility:visible}
+.pslide b{min-width:4.6em;text-align:center;color:var(--key);font-size:.95em}
+.pslide input{flex:1;accent-color:#FFE08A;height:2em;touch-action:pan-x}
+.pmode{display:flex;gap:.3em;justify-content:center;flex-wrap:nowrap}
+.pmode button{padding:.35em .8em;border-radius:999px;color:#cfd2da;font-size:.85em;white-space:nowrap}
+.pmode button.on{background:#2b2e37;color:#fff;font-weight:700}
+.phone .shut{width:3.4em;height:3.4em;border-radius:50%;background:#fff;border:.3em solid #6f7480;opacity:.45}
+.phone .shut.on{opacity:1;animation:halo 1.4s ease-in-out infinite}
+#photoUI .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
+.shotimg{width:100%;max-width:240px;border-radius:14px;border:4px solid #fff;box-shadow:0 3px 0 var(--edge),0 8px 18px rgba(60,40,60,.16);transform:rotate(-2deg);align-self:center}
+.howto{margin:0;padding:12px 14px 12px 34px;line-height:1.7;background:var(--soft2);border-radius:14px}
+.howto b{color:var(--pri)}
+@keyframes phhint{0%,100%{transform:translate(0,0)}50%{transform:translate(-10px,-10px)}}
+@keyframes tgt{50%{box-shadow:0 0 0 5px rgba(255,224,138,.35)}}
 /* 아래 이전·다음 */
 #nav{display:flex;align-items:center;justify-content:space-between;padding:clamp(8px,1.4vh,14px) var(--pad) clamp(12px,2vh,18px);flex:none}
 #nav .btn{min-width:132px}
@@ -244,6 +330,7 @@ body[data-mode=intro] #app{visibility:hidden}
 <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.500h3.500L12 6v12l-4.500-3.500H4zM16 9.500l5 5M21 9.500l-5 5"/></symbol>
 <symbol id="i-reset" viewBox="0 0 24 24"><path d="M5 5v5h5M5.500 10a7.500 7.500 0 11-1 5"/></symbol>
 <symbol id="i-cup" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 01-10 0zM7 6H4a3 3 0 003 4M17 6h3a3 3 0 01-3 4M12 14v4M8.500 20h7"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3.500l1.500-2.500h6L16.500 8H20v11H4z"/><circle cx="12" cy="13.200" r="3.300"/></symbol>
 <symbol id="i-moon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="9" cy="10" r="1.6"/><circle cx="14.5" cy="14" r="2.2"/></symbol>
 </defs></svg>
 
@@ -267,6 +354,8 @@ body[data-mode=intro] #app{visibility:hidden}
         <canvas id="draw"></canvas>
         <img id="lander" src="assets/lander.png" alt="">
         <div id="fade"></div>
+        <div id="camFrame"><i></i><i></i><i></i><i></i><b></b></div><div id="flashS"></div>
+        <button id="shoot" data-q="1" aria-label="사진 찍기"><svg class="i"><use href="#i-cam"/></svg>찍기</button>
         <div id="viewChip"><span>지금 보는 곳</span><b></b></div>
         <button id="reset" aria-label="이 활동을 처음부터 다시 하기"><svg class="i"><use href="#i-reset"/></svg>초기화</button>
         <div id="zoom"><button id="zin" aria-label="크게 보기"><svg class="i"><use href="#i-plus"/></svg>크게</button><button id="zout" aria-label="작게 보기"><svg class="i"><use href="#i-minus"/></svg>작게</button><button id="flip" aria-label="뒷면 보기" style="display:none"><svg class="i"><use href="#i-flip"/></svg>뒷면</button></div>
@@ -293,6 +382,8 @@ body[data-mode=intro] #app{visibility:hidden}
         <div class="sent">달 표면의 어두운 곳을 <span class="blank" data-a="달의 바다"></span>라고 한다.</div>
       </div>
       <div class="bank" id="bank"></div>
+      <div id="pinBox" style="display:none;flex-direction:column;gap:10px"></div>
+      <div id="vsBox" style="display:none;flex-direction:column;gap:10px"></div>
       <div id="think" style="display:none;flex-direction:column;gap:10px">
         <span class="eyebrow">더 생각해요</span>
         <p><b>달의 바다에는 실제로 물이 없어요. 그런데 왜 '바다'라고 부를까요?</b></p>
@@ -309,20 +400,8 @@ body[data-mode=intro] #app{visibility:hidden}
       <p class="note">하지 않고 마무리해도 괜찮아요.</p>
       <div class="pick">
         <button id="pickC"><small>활동 1</small><b>달 착륙 지점 고르기</b>내가 관찰한 달 표면 가운데 탐사선이 내릴 곳을 고르고 까닭을 써요.</button>
-        <button id="pickB"><small>활동 2</small><b>구덩이 만들기</b>달 표면 모형에 돌을 떨어뜨려 보고, '충돌 구덩이'라는 이름을 생각해 봐요.</button>
-      </div>
-    </div></section>
-
-    <!-- 더 해 보기 B -->
-    <section class="full" id="actB"><div class="panel">
-      <span class="eyebrow">더 해 보기 · 구덩이 만들기</span>
-      <h2 id="bGuide"></h2>
-      <canvas id="impact" width="800" height="340"></canvas>
-      <div id="bAfter" style="display:none;flex-direction:column;gap:10px">
-        <p><b>달 표면의 움푹 파인 곳을 왜 '충돌 구덩이'라고 부를까요?</b></p>
-        <textarea id="bTxt" placeholder="내 생각을 써 보세요."></textarea>
-        <div class="row"><button class="btn line" id="bBEx">예시 답 보기</button><button class="btn" id="bBDone">일지에 기록</button></div>
-        <p class="fb" id="bEx" style="display:none"><b>예시</b> 돌이 달 표면에 부딪쳐서(충돌해서) 생긴 구덩이이기 때문이에요.</p>
+        <button id="pickB"><small>활동 2</small><b>달 모형 빚기</b>민무늬 공을 눌러 구덩이를 만들고 색을 칠해, 내가 관찰한 달을 모형으로 나타내요.</button>
+        <button id="pickD"><small>활동 3</small><b>달 사진 찍기</b>스마트폰을 망원경에 대고 달 표면을 사진으로 찍는 방법을 차례대로 해 봐요.</button>
       </div>
     </div></section>
 
@@ -374,10 +453,11 @@ const D2R=Math.PI/180;
 
 /* ---------- 상태 ---------- */
 const KEY='moon-obs-421-01';
-const fresh=()=>({stage:'intro',max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},found:{},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',bDone:false,bTxt:'',faces:{},name:''});
+const fresh=()=>({stage:'intro',pins:{},predSame:null,shots:{},photo:null,photoFound:[],max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',clay:null,faces:{},name:''});
 let S=fresh();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-const load=()=>{try{const t=localStorage.getItem(KEY);return t?Object.assign(fresh(),JSON.parse(t)):null}catch(e){return null}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){try{const c=JSON.parse(JSON.stringify(S));Object.values(c.shots||{}).forEach(x=>x.img=null);c.draw=c.photo=null;localStorage.setItem(KEY,JSON.stringify(c))}catch(e2){}}};
+const OLD2NEW={sea1:'m1',sea2:'m1',hi:'m2',cr1:'m3',cr2:'m3',far:'m4'};
+const load=()=>{try{const t=localStorage.getItem(KEY);if(!t)return null;const o=Object.assign(fresh(),JSON.parse(t));if(o.found){for(const k in o.found){const sp=SPOTS.find(x=>x.id===k),m=OLD2NEW[k];if(sp&&m&&!o.shots[m])o.shots[m]={img:null,lat:sp.lat,lon:sp.lon}}delete o.found}return o}catch(e){return null}};
 
 /* ---------- 자료 ---------- */
 // [문장, 그림] 그림은 아이의 생각 풍선 안에 그 예상의 달을 그린 것(구도가 네 장 모두 같음)
@@ -391,6 +471,16 @@ const SPOTS=[
  {id:'hi',lat:-22,lon:22,ans:1,name:'밝은 곳',term:'밝고 울퉁불퉁한 곳',say:'달 표면에는 <b>밝은 곳</b>도 있어요. 표면이 <b>울퉁불퉁</b>하고 구덩이가 많이 보여요.',log:'밝고 울퉁불퉁한 곳을 찾았다.',img:'assets/tb_surface.jpg'},
  {id:'far',lat:-4,lon:-157.4,far:true,name:'달의 뒷면',term:'달의 뒷면',q:'달의 뒷면은 앞면과 무엇이 다른가요?',opts:['어두운 곳이 거의 없고 충돌 구덩이가 많아요.','어두운 곳이 앞면보다 훨씬 넓어요.','표면이 매끈매끈해요.'],ans:0,say:'탐사선이 찍어 온 <b>달의 뒷면</b>이에요. 뒷면도 단단한 땅이고, 충돌 구덩이가 아주 많아요.',log:'탐사선이 찍은 달의 뒷면에는 어두운 곳이 거의 없고 충돌 구덩이가 많았다.',img:'assets/tb_frontback.jpg'}
 ];
+// 관찰 2의 임무. 한 번에 하나씩, 순서 고정. hints: 도움이 필요할 때 반짝이게 할 지점(SPOTS의 id)
+const MISS=[
+ {id:'m1',kind:'dark',name:'어두운 곳',term:'달의 바다',ask:'달을 돌리고 <b>크게</b>로 다가가서, <b>어두운 곳</b>을 틀에 맞추고 <b>찍기</b>를 눌러 주세요.',miss:'조금 더 어두운 곳을 찾아볼까요?',say:'잘 찾았어요. 달 표면의 어두운 곳을 <b>달의 바다</b>라고 해요. 실제로 물은 없어요.',log:'어두운 곳을 찾아 찍었다. 달의 바다라고 한다.',hints:['sea1','sea2'],img:'assets/spot_sea1.jpg'},
+ {id:'m2',kind:'bright',name:'밝고 울퉁불퉁한 곳',term:'밝고 울퉁불퉁한 곳',ask:'이번에는 <b>밝고 울퉁불퉁한 곳</b>을 찾아 찍어 주세요.',miss:'조금 더 밝은 곳을 찾아볼까요?',say:'잘 찾았어요. 달 표면에는 <b>밝은 곳</b>도 있어요. 표면이 <b>울퉁불퉁</b>하고 구덩이가 많이 보여요.',log:'밝고 울퉁불퉁한 곳을 찾아 찍었다.',hints:['hi'],img:'assets/tb_surface.jpg'},
+ {id:'m3',kind:'crater',name:'움푹 파인 곳',term:'충돌 구덩이',ask:'<b>둥글게 움푹 파인 곳</b>을 찾아 틀 가운데에 맞추고 찍어 주세요. <b>크게</b>로 다가가면 잘 보여요.',miss:'크게 다가가서, 둥글게 움푹 파인 곳을 틀 가운데에 맞춰 볼까요?',say:'잘 찾았어요. 둥글게 움푹 파인 곳을 <b>충돌 구덩이</b>라고 해요. 크기가 여러 가지예요.',log:'둥글게 움푹 파인 충돌 구덩이를 찾아 찍었다.',hints:['cr2','cr1'],img:'assets/tb_crater.jpg'},
+ {id:'m4',kind:'far',name:'달의 뒷면',term:'달의 뒷면',ask:'<b>뒷면</b> 단추를 누르고, 탐사선이 찍어 온 달의 뒷면을 찍어 주세요.',miss:'뒷면 단추를 눌러 달의 뒷면으로 가 볼까요?',say:'탐사선이 찍어 온 <b>달의 뒷면</b>이에요. 뒷면도 단단한 땅이고, 충돌 구덩이가 아주 많아요.',log:'탐사선이 찍은 달의 뒷면에는 어두운 곳이 거의 없고 충돌 구덩이가 많았다.',hints:['far'],img:'assets/tb_frontback.jpg',
+  q:'내가 찍은 달의 뒷면은 앞면과 무엇이 다른가요?',opts:['어두운 곳이 거의 없고 충돌 구덩이가 많아요.','어두운 곳이 앞면보다 훨씬 넓어요.','표면이 매끈매끈해요.'],ans:0}];
+// 큰 충돌 구덩이 [위도, 경도, 지름 km]. 국제천문연맹 행성 명명 목록의 값이고, tools/check_craters.py로 NASA 높이 자료에서 실제로 파여 있는지 확인함
+const CRATERS=[[9.62,-20.08,96],[-43.3,-11.22,85],[8.12,-38.01,31],[23.73,-47.49,40],[51.62,-9.38,101],[29.72,-3.99,81],[14.47,-11.32,59],[-58.62,-14.73,231],[-9.16,-1.84,154],[-13.39,-2.85,111],[-18.26,-1.93,97],[-11.45,26.28,99],[-13.29,24.07,98],[-17.98,23.55,99],[-8.86,61.04,132],[-25.39,60.84,184],[31.88,29.99,95],[50.24,17.32,88],[44.27,16.23,70],[-5.38,-68.36,173],[-17.55,-39.96,111],[-20.75,-22.26,61],[-50.03,-6.34,156],[-49.55,-21.88,146],[-44.38,-55.11,212],[-20.38,128.97,185],[-19.7,149.4,262],[-16.8,173.4,138],[22.05,-163.32,71],[-5.9,179.4,93],[-27.4,172.2,240],[-4.19,-157.47,423]];
+const DARK_MAX=122,BRIGHT_MIN=105;   // 색 지도 밝기(0~255). 바다 68~91, 밝은 곳 150~183. 105~122는 어느 쪽으로도 인정
 const NEAR={sea1:'<b>달의 바다</b>를 가까이에서 본 모습이에요. 물은 없고 단단한 땅이에요. 넓고 매끈해 보이지만 작은 충돌 구덩이도 있어요.',
  sea2:'여기도 <b>달의 바다</b>예요. 매끈해 보이는 땅에서 작은 충돌 구덩이를 찾아봐요.',
  cr1:'<b>충돌 구덩이</b>를 가까이에서 본 모습이에요. 둥글게 움푹 파여 있어요. 주변의 다른 구덩이도 찾아봐요.',
@@ -407,14 +497,14 @@ const WHY=['매끈해 보여서 내리기 쉬울 것 같아요.','충돌 구덩�
 const FACES=[['지식·이해','달의 모양과 표면 모습을 알게 되었어요.'],['과정·기능','달의 모양과 표면 모습을 조사했어요.'],['가치·태도','달에서 볼 수 있는 다양한 모습에 흥미를 가지게 되었어요.']];
 const FACE_SVG={'최고야':'<path d="M13 17q3-3 6 0M23 17q3-3 6 0"/><path d="M13 24q8 9 16 0z" style="fill:currentColor;opacity:.25"/><path d="M13 24q8 9 16 0"/>','잘했어':'<path d="M15.5 16v2M26.500 16v2"/><path d="M14 24q7 6 14 0"/>','힘내자':'<path d="M15.5 16v2M26.500 16v2"/><path d="M15 25q6 2.500 12 0"/>'};
 const STAGES=['intro','predict','shape','surface','wrap','actA','more','finish'];
-const MODE={intro:'intro',predict:'panel',shape:'stage',surface:'stage',wrap:'panel',actA:'stage',more:'panel',actC:'stage',actB:'panel',finish:'panel'};
+const MODE={intro:'intro',predict:'panel',shape:'stage',surface:'stage',wrap:'panel',actA:'stage',more:'panel',actC:'stage',actB:'stage',actD:'stage',finish:'panel'};
 const TABS=[['predict','예상','달의 모습'],['shape','관찰 1','달의 모양'],['surface','관찰 2','달의 표면'],['wrap','정리','관찰 내용'],['actA','창의 활동','달 무늬'],['more','더 해 보기','고르기'],['finish','마무리','스스로 평가']];
 $('#tabs').innerHTML=TABS.map(t=>`<button class="tab" data-s="${t[0]}"><small>${t[1]}</small><b>${t[2]}</b></button>`).join('');
 
 /* ---------- 효과음 (Web Audio로 직접 만든 소리, 외부 파일 없음) ---------- */
 const SND={on:true,ctx:null};try{SND.on=localStorage.getItem(KEY+':snd')!=='off'}catch(e){}
 function tn(f0,dur,type,vol,delay,f1){if(!SND.on)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!SND.ctx)SND.ctx=new C();const c=SND.ctx;if(c.state==='suspended')c.resume();const t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.1,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.03)}catch(e){}}
-const SFX={click:()=>tn(1150,.07,'sine',.07,0,820),page:()=>{tn(520,.09,'sine',.05,0,700);tn(880,.1,'sine',.04,.06)},ok:()=>{tn(784,.14,'sine',.12);tn(1047,.18,'sine',.11,.09);tn(1319,.3,'sine',.09,.18)},note:()=>tn(760,.11,'triangle',.09,0,1260),wrong:()=>{tn(240,.14,'square',.045,0,180);tn(200,.18,'square',.045,.12,140)},popup:()=>{tn(660,.1,'sine',.08,0,880);tn(990,.12,'sine',.05,.07)},check:()=>tn(760,.11,'triangle',.1,0,1260),down:()=>tn(520,.5,'sine',.08,0,150),thud:()=>{tn(150,.22,'sine',.16,0,60);tn(90,.3,'triangle',.1,.02,50)},fanfare:()=>{[523,659,784,1047].forEach((f,i)=>tn(f,.22,'triangle',.1,i*.11));tn(1047,.6,'sine',.06,.46)}};
+const SFX={click:()=>tn(1150,.07,'sine',.07,0,820),page:()=>{tn(520,.09,'sine',.05,0,700);tn(880,.1,'sine',.04,.06)},ok:()=>{tn(784,.14,'sine',.12);tn(1047,.18,'sine',.11,.09);tn(1319,.3,'sine',.09,.18)},note:()=>tn(760,.11,'triangle',.09,0,1260),wrong:()=>{tn(240,.14,'square',.045,0,180);tn(200,.18,'square',.045,.12,140)},popup:()=>{tn(660,.1,'sine',.08,0,880);tn(990,.12,'sine',.05,.07)},check:()=>tn(760,.11,'triangle',.1,0,1260),down:()=>tn(520,.5,'sine',.08,0,150),shutter:()=>{tn(2400,.03,'square',.06);tn(1200,.05,'square',.05,.05)},thud:()=>{tn(150,.22,'sine',.16,0,60);tn(90,.3,'triangle',.1,.02,50)},fanfare:()=>{[523,659,784,1047].forEach((f,i)=>tn(f,.22,'triangle',.1,i*.11));tn(1047,.6,'sine',.06,.46)}};
 const snd=n=>{if(SFX[n])SFX[n]()};
 const sndBtn=()=>{const b=$('#bSnd');b.classList.toggle('off',!SND.on);b.innerHTML=ic(SND.on?'snd':'mute')};
 $('#bSnd').onclick=()=>{SND.on=!SND.on;try{localStorage.setItem(KEY+':snd',SND.on?'on':'off')}catch(e){}sndBtn();snd('check')};sndBtn();
@@ -444,7 +534,7 @@ $('#bPrep').onclick=showPrep;$('#bVideo').onclick=showVideo;$('#bVideo2').onclic
 $('#bJournal').onclick=()=>pop('<span class="eyebrow">관찰 기록</span><h2>관찰 일지</h2><div id="journal">'+journalHTML()+'</div>');
 $('#bHomeTop').onclick=()=>{save();go('intro',true)};
 $$('.tab').forEach((t,i)=>t.onclick=()=>{if(i<=(S.max||0)){if(TABS[i][0]!==S.stage)go(TABS[i][0])}else toast('앞의 활동을 먼저 해 주세요.','warn')});
-$('#reset').onclick=()=>{const s=S.stage;if(s==='shape')S.shape={dragged:false,ok:false};else if(s==='surface')S.found={};else if(s==='actA'){S.draw=null;S.drawName=''}else if(s==='actC'){S.site=null;S.siteWhy=[];S.siteTxt=''}save();go(s);toast('이 활동을 처음부터 다시 해요.','note')};
+$('#reset').onclick=()=>{const s=S.stage;if(s==='shape')S.shape={dragged:false,ok:false};else if(s==='surface')S.shots={};else if(s==='actA'){S.draw=null;S.drawName=''}else if(s==='actC'){S.site=null;S.siteWhy=[];S.siteTxt=''}else if(s==='actD'){S.photo=null;S.photoFound=[]}else if(s==='actB')S.clay=null;save();go(s);toast('이 활동을 처음부터 다시 해요.','note')};
 addEventListener('keydown',e=>{if(MODE[S.stage]==='intro'||$('#pop').classList.contains('show')||/INPUT|TEXTAREA|VIDEO/.test(e.target.tagName||''))return;if(e.key==='ArrowRight'&&!nextBtn.disabled&&nextBtn.style.display!=='none')nextBtn.click();else if(e.key==='ArrowLeft')prevBtn.click()});
 const nextBtn=$('#bNext'),prevBtn=$('#bPrev');
 const allow=(on,label)=>{nextBtn.disabled=!on;nextBtn.classList.toggle('pulse',!!on);if(label)$('#nextT').textContent=label};
@@ -457,8 +547,13 @@ const scene=new THREE.Scene();scene.background=new THREE.Color(0x05081a);
 const camera=new THREE.PerspectiveCamera(32,1,0.05,100);
 let texLeft=3;const texDone=()=>{if(--texLeft===0)setTimeout(()=>{introMoon();loadHQ()},60)};
 const TL=new THREE.TextureLoader();
-const colorTex=TL.load(window.MOON_COLOR,texDone);if('colorSpace' in colorTex)colorTex.colorSpace=THREE.SRGBColorSpace;colorTex.anisotropy=8;
-const heightTex=TL.load(window.MOON_HEIGHT,texDone);
+const colorTex=TL.load(window.MOON_COLOR,t=>{GRID.l=gridOf(t.image,512,256);texDone()});if('colorSpace' in colorTex)colorTex.colorSpace=THREE.SRGBColorSpace;colorTex.anisotropy=8;
+const heightTex=TL.load(window.MOON_HEIGHT,t=>{GRID.h=gridOf(t.image,1024,512);texDone()});
+// 판정용 격자: 색 지도의 밝기(512×256)와 높이(1024×512)를 한 번 읽어 둠
+const GRID={l:null,h:null};
+function gridOf(img,w,h){try{const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,w,h);const d=x.getImageData(0,0,w,h).data,o=new Uint8Array(w*h);for(let i=0;i<o.length;i++)o[i]=(d[i*4]*3+d[i*4+1]*6+d[i*4+2])/10;return{w,h,d:o}}catch(e){return null}}
+const gAt=(g,lat,lon)=>{const x=((Math.floor((lon+180)/360*g.w)%g.w)+g.w)%g.w,y=Math.max(0,Math.min(g.h-1,Math.floor((90-lat)/180*g.h)));return g.d[y*g.w+x]};
+const gMean=(g,lat,lon,rad)=>{let s=0,n=0;const st=Math.max(.5,rad/4);for(let a=-rad;a<=rad;a+=st)for(let b=-rad;b<=rad;b+=st){const la=lat+a;if(la>89||la<-89)continue;s+=gAt(g,la,lon+b/Math.max(.2,Math.cos(la*D2R)));n++}return n?s/n:0};
 // 음영은 NASA 높이 자료(64픽셀/도)에서 미리 계산한 법선 지도로 냄. 기울기를 NORMAL_K배로 보이게 함
 const NORMAL_K=1.6,normalTex=TL.load(window.MOON_NORMAL,texDone);normalTex.anisotropy=8;
 const moon=new THREE.Mesh(new THREE.SphereGeometry(1,256,128),new THREE.MeshStandardMaterial({map:colorTex,normalMap:normalTex,normalScale:new THREE.Vector2(NORMAL_K,NORMAL_K),displacementMap:heightTex,displacementScale:0.035,displacementBias:-0.017,roughness:1,metalness:0}));
@@ -486,6 +581,7 @@ SPOTS.forEach(o=>addSprite(o,'#ffe08a',null,'spot'));
 SITES.forEach(o=>addSprite(o,'#e86fc0',o.id,'site'));
 if(document.fonts&&document.fonts.load)document.fonts.load('700 60px Gmarket').then(()=>sprites.forEach(s=>{if(s.userData.group==='site'){s.material.map.dispose();s.material.map=ringTex('#e86fc0',s.userData.o.id)}})).catch(()=>{});
 const showGroup=g=>sprites.forEach(s=>s.userData.vis=(s.userData.group===g));
+const showSpots=ids=>sprites.forEach(s=>s.userData.vis=(s.userData.group==='spot'&&ids.includes(s.userData.o.id)));
 /* ---------- 3D 지형 (달 표면 가까이 보기) ---------- */
 // 높이는 NASA 자료 그대로이고, 화면에서는 높낮이를 EX배로 크게 나타냄. 해는 고정이라 음영·그림자를 그림에 미리 구워 넣음
 const T=(()=>{const EX=2,G=257,U_SIZE=10,SUN_EL=20*D2R,SUN=[-.85,-.53];// SUN: 해가 있는 쪽(동, 남). 북서쪽
@@ -531,17 +627,17 @@ const T=(()=>{const EX=2,G=257,U_SIZE=10,SUN_EL=20*D2R,SUN=[-.85,-.53];// SUN: �
 // 조작
 let drag=null,moved=0;const ptrs=new Map();let pinch0=0;
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY};moved=0;if(ptrs.size===2){const p=[...ptrs.values()];pinch0=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1])}});
-canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const C=T.on?T.v:V;if(!C.free)return;
+canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);if(onMove&&ptrs.size===1){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};moved+=Math.abs(dx)+Math.abs(dy);onMove(dx,dy);return}const C=T.on?T.v:V;if(!C.free)return;
   if(ptrs.size===2){const p=[...ptrs.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);if(pinch0){C.t.dist=Math.max(C.minD,Math.min(C.maxD,C.t.dist*pinch0/d));pinch0=d}return}
   const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};moved+=Math.abs(dx)+Math.abs(dy);const k=T.on?.25:.22*(V.dist-1)/3.2+.04;C.t.az-=dx*k;C.t.el=Math.max(C.elMin,Math.min(C.elMax,C.t.el+dy*k));C.az=C.t.az;C.el=C.t.el;onDrag(Math.abs(dx)+Math.abs(dy))});
-const up=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);pinch0=0;if(moved<8&&!T.on)onTap(e.clientX,e.clientY)};
+const up=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);pinch0=0;if(onUp)onUp();if(moved<8&&!T.on)onTap(e.clientX,e.clientY)};
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',e=>ptrs.delete(e.pointerId));
 const zoomBy=f=>{const C=T.on?T.v:V;C.t.dist=Math.max(C.minD,Math.min(C.maxD,C.t.dist*f))};
 canvas.addEventListener('wheel',e=>{if(!(T.on?T.v:V).free)return;zoomBy(e.deltaY>0?1.1:.9)},{passive:true});
 $('#zin').onclick=()=>zoomBy(.8);$('#zout').onclick=()=>zoomBy(1.25);
 $('#flip').onclick=()=>{const back=Math.cos((V.t.az)*D2R)>0;fly(V.t.az+(back?180:-180),0,4.3);toast(back?'탐사선이 찍어 온 달의 뒷면이에요.':'지구에서 보이는 달의 앞면이에요.','note')};
 const ndc=new THREE.Vector2();
-let onDrag=()=>{},onTap=()=>{};
+let onDrag=()=>{},onTap=()=>{},onMove=null,onUp=null;   // onMove(dx,dy): 달을 돌리는 대신 끌기 이동량을 직접 받음
 // x, y는 화면(client) 좌표
 function pickSprite(x,y){const r=SR();ndc.set((x-r.x)/r.w*2-1,-((y-r.y)/r.h*2-1));let best=null,bd=1e9;for(const s of sprites){if(!s.visible)continue;const p=s.position.clone().project(camera);const d=Math.hypot((p.x-ndc.x)*r.w/2,(p.y-ndc.y)*r.h/2);if(d<38&&d<bd){bd=d;best=s}}return best}
 // 무대 안 좌표로 돌려줌
@@ -555,8 +651,21 @@ function tick(t){requestAnimationFrame(tick);const dt=Math.min(.05,(t-tPrev)/100
   if(V.sunMode==='side'){sun.position.copy(ll(V.el+15,V.az+55,10))}else if(V.sunMode==='flat'){sun.position.copy(ll(V.el+4,V.az+8,10))}else{sun.position.copy(ll(V.el+22,V.az+52,10))}
   const cn=cp.clone().normalize();const pul=1+.12*Math.sin(t/260);
   if(chipOn){const far=Math.cos(V.az*D2R)<0,c=$('#viewChip');if(c.dataset.f!==String(far)){c.dataset.f=far;c.classList.toggle('far',far);c.lastElementChild.textContent=far?'달의 뒷면':'달의 앞면'}}
-  for(const s of sprites){const on=!!s.userData.vis&&s.userData.o.id!==askId&&s.position.clone().normalize().dot(cn)>.22;s.visible=on;const done=s.userData.group==='spot'&&S.found[s.userData.o.id];s.material.opacity=done?.35:1;s.scale.setScalar((s.userData.group==='site'?.17:.14)*(done?1:pul)*Math.max(.6,(V.dist-1)/3.0))}
+  for(const s of sprites){const on=!!s.userData.vis&&s.userData.o.id!==askId&&s.position.clone().normalize().dot(cn)>.22;s.visible=on;const done=false;s.material.opacity=1;s.scale.setScalar((s.userData.group==='site'?.17:.14)*(done?1:pul)*Math.max(.6,(V.dist-1)/3.0))}
+  if(duo&&duoScene){if(duoScene.userData.sun)duoScene.userData.sun.position.copy(sun.position);   // 관찰 1: 무대를 둘로 나눠 한쪽에 달 사진(납작한 원판), 다른 쪽에 달을 같은 방향으로 그림
+    const r=SR(),wide=r.w>=r.h,vw=wide?r.w/2:r.w,vh=wide?r.h:r.h/2;camera.aspect=vw/vh;camera.updateProjectionMatrix();renderer.setScissorTest(true);
+    renderer.setViewport(0,wide?0:vh,vw,vh);renderer.setScissor(0,wide?0:vh,vw,vh);renderer.render(duoScene,camera);
+    renderer.setViewport(wide?vw:0,0,vw,vh);renderer.setScissor(wide?vw:0,0,vw,vh);renderer.render(scene,camera);
+    renderer.setScissorTest(false);renderer.setViewport(0,0,r.w,r.h);camera.aspect=r.w/r.h;camera.updateProjectionMatrix();if(frameHook)frameHook();return}
   renderer.render(scene,camera);if(frameHook)frameHook()}
+let duo=false,discScene=null,duoScene=null;   // duoScene: 나눈 화면의 첫 칸에 그릴 장면(달 사진 원판 또는 내 달 모형)
+// 달 사진: 지금의 달 모형을 정면에서 한 번 그려 납작한 원판에 붙임. 뒤쪽은 흰 종이
+function makeDisc(){if(discScene)return true;if(texLeft>0)return false;const sz=512,keep=renderer.getPixelRatio();try{renderer.setPixelRatio(1);renderer.setSize(sz,sz,false);camera.clearViewOffset();camera.aspect=1;camera.updateProjectionMatrix();camera.position.copy(ll(0,0,3.56));camera.up.set(0,1,0);camera.lookAt(0,0,0);sun.position.copy(ll(4,8,10));renderer.render(scene,camera);
+    const c=document.createElement('canvas');c.width=c.height=sz;c.getContext('2d').drawImage(canvas,0,0,sz,sz);const tex=new THREE.CanvasTexture(c);if('colorSpace' in tex)tex.colorSpace=THREE.SRGBColorSpace;
+    discScene=new THREE.Scene();discScene.background=new THREE.Color(0x05081a);const g=new THREE.CircleGeometry(1,96);
+    const f=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:tex}));f.rotation.y=Math.PI/2;discScene.add(f);   // 앞면이 달의 앞면(경도 0, +x)을 향함
+    const bk=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xe9e6ee}));bk.rotation.y=-Math.PI/2;discScene.add(bk)}catch(e){discScene=null}
+  renderer.setPixelRatio(keep);resize();return !!discScene}
 let frameHook=null,chipOn=false,askId=null;   // askId: 가까이 보고 있는 지점. 그 지점의 동그라미는 숨겨서 표면을 가리지 않게 함
 const chip=on=>{chipOn=on;const c=$('#viewChip');c.classList.toggle('show',on);c.dataset.f=''};
 
@@ -565,75 +674,150 @@ const side=$('#side');
 const setSide=html=>{side.innerHTML=html||'';side.scrollTop=0};
 function go(stage,keep){S.stage=stage;if(!keep)save();
   $$('.full').forEach(f=>f.classList.remove('show'));$('#draw').classList.remove('show');$('#draw').style.pointerEvents='';$('#lander').style.display='none';
-  T.off();chip(false);hand(null);frameHook=null;askId=null;onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';$('#flip').classList.remove('pulse');setSide('');inst('01','');
+  T.off();chip(false);hand(null);frameHook=null;askId=null;onMove=null;onUp=null;duo=false;duoScene=null;['#clayPad','#clayBar'].forEach(q=>{const e=$(q);if(e)e.remove()});canvas.style.filter='';['#scope','#focusBar'].forEach(q=>{const e=$(q);if(e)e.remove()});$$('.duo').forEach(e=>e.remove());camera.clearViewOffset();renderer.setScissorTest(false);$('#camFrame').classList.remove('show');$('#shoot').classList.remove('show');{const u=$('#photoUI');if(u)u.remove()}onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';$('#flip').classList.remove('pulse');setSide('');inst('01','');
   document.body.dataset.mode=MODE[stage];
   $('#viewChip').classList.remove('show');if(stage!=='intro')snd('page');
-  const ti=TABS.findIndex(t=>t[0]===(stage==='actC'||stage==='actB'?'more':stage));if(ti>(S.max||0)){S.max=ti;if(!keep)save()}$$('.tab').forEach((t,i)=>{t.classList.toggle('on',i===ti);t.classList.toggle('done',i<ti)});
+  const ti=TABS.findIndex(t=>t[0]===(/^act[CBD]$/.test(stage)?'more':stage));if(ti>(S.max||0)){S.max=ti;if(!keep)save()}$$('.tab').forEach((t,i)=>{t.classList.toggle('on',i===ti);t.classList.toggle('done',i<ti)});
   nextBtn.style.display=(stage==='finish')?'none':'';$('#nextT').textContent='다음';allow(false);
   resize();
-  ({intro:sIntro,predict:sPredict,shape:sShape,surface:sSurface,wrap:sWrap,actA:sActA,more:sMore,actC:sActC,actB:sActB,finish:sFinish})[stage]()}
-prevBtn.onclick=()=>{const s=S.stage;if(s==='actC'||s==='actB')return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.max(0,i-1)],i<=1)};
-nextBtn.onclick=()=>{const s=S.stage;if(s==='actC'||s==='actB')return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.min(STAGES.length-1,i+1)])};
+  ({intro:sIntro,predict:sPredict,shape:sShape,surface:sSurface,wrap:sWrap,actA:sActA,more:sMore,actC:sActC,actB:sActB,actD:sActD,finish:sFinish})[stage]()}
+prevBtn.onclick=()=>{const s=S.stage;if(/^act[CBD]$/.test(s))return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.max(0,i-1)],i<=1)};
+nextBtn.onclick=()=>{const s=S.stage;if(/^act[CBD]$/.test(s))return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.min(STAGES.length-1,i+1)])};
 
 function sIntro(){$('#bStart').onclick=()=>prepCheck(()=>{S=fresh();go('predict')});const o=load();const b=$('#bResume');if(o&&o.stage!=='intro'){b.style.display='';b.onclick=()=>{S=o;go(S.stage)}}else b.style.display='none'}
 
 function sPredict(){$('#predict').classList.add('show');const box=$('#predOpts');box.innerHTML='';PRED.forEach((t,i)=>{const b=el('button','opt pcard'+(S.pred===i?' ok':''),`<img src="assets/${t[1]}.png" alt=""><span>${esc(t[0])}</span>`);b.onclick=()=>{S.pred=i;save();sPredict();toast('예상이 맞는지 망원경으로 확인해 봐요.','note')};box.append(b)});allow(S.pred!=null,'망원경으로 보기')}
 
-function sShape(){V.sunMode='side';let step=S.shape.ok?3:1;const OPT=['동전처럼 납작한 원 모양','둥근 공 모양','상자 모양'];
-  const draw=()=>{setSide(`<span class="eyebrow">관찰 1</span><h2>달은 어떤 모양일까요?</h2>
-    <p class="note" id="shapeNote">${step<3?'달을 돌려 본 뒤에 고를 수 있어요.':'돌려 본 달은 어떤 모양인가요?'}</p>
+/* 관찰 1: 망원경을 달에 맞추고 → 초점을 맞추고 → 달 사진(원판)과 달(공)을 함께 돌려 보고 → 모양 고르기 */
+function sShape(){V.sunMode='side';const OPT=['동전처럼 납작한 원 모양','둥근 공 모양','상자 모양'],FOCUS=64;
+  let step=S.shape.ok?4:1,ox=0,oy=0,acc=0,fv=12;
+  const scope=on=>{let e=$('#scope');if(on&&!e){e=el('div');e.id='scope';stageEl.append(e)}if(!on&&e)e.remove();if(on){const r=SR();e.style.setProperty('--er',Math.min(r.w,r.h)*.46+'px')}return e};
+  const side_=()=>{setSide(`<span class="eyebrow">관찰 1</span><h2>달은 어떤 모양일까요?</h2>
+    <p class="note" id="shapeNote">${step<4?'달 사진과 달을 돌려 본 뒤에 고를 수 있어요.':'돌려 본 달은 어떤 모양인가요?'}</p>
     <div class="opts" id="shapeOpts"></div><div id="shapeFb"></div>`);
-    OPT.forEach((t,i)=>{const b=el('button','opt'+(S.shape.ok&&i===1?' ok':''),t);if(step<3)b.disabled=true;b.onclick=()=>{if(i===1){S.shape.ok=true;save();toast('맞아요! 일지에 기록했어요.');draw()}else{b.classList.add('no');toast('달을 다시 돌려 보세요.','warn');$('#shapeFb').innerHTML='<p class="fb warn"><b>다시 살펴봐요.</b> 옆에서 보아도, 위에서 보아도 둥글어요.</p>'}};$('#shapeOpts').append(b)});
-    if(step===1)inst('01','밤하늘의 <b>달</b>을 눌러 망원경을 달에 맞춰 주세요.');
-    else if(step===2)inst('02','달을 <b>끌어서</b> 이리저리 돌려 주세요.');
-    else if(!S.shape.ok)inst('03','<b>달의 모양</b>을 골라 주세요.');
-    else{inst('✓','달은 <b>둥근 공 모양</b>이에요.');$('#shapeFb').innerHTML='<p class="fb"><b>맞아요.</b> 달은 <b>둥근 공 모양</b>이에요. 사진에서는 납작한 원처럼 보이지만, 돌려 보면 공 모양인 것을 알 수 있어요.</p>';allow(true,'표면 관찰하기')}};
-  if(step===1){V.dist=9;fly(0,0,9);hand('tap');onTap=()=>{if(step!==1)return;step=2;fly(0,0,4.4);hand('drag');V.free=true;V.maxD=5.2;V.minD=3.6;draw();toast('망원경으로 본 달이에요.','note')}}
-  else{fly(0,0,4.4);V.free=true;V.minD=3.6;V.maxD=5.2}
-  let acc=0;onDrag=d=>{if(step!==2)return;acc+=d;if(acc>600){step=3;hand(null);S.shape.dragged=true;draw()}};
-  draw()}
+    OPT.forEach((t,i)=>{const b=el('button','opt'+(S.shape.ok&&i===1?' ok':''),t);if(step<4)b.disabled=true;b.onclick=()=>{if(i===1){S.shape.ok=true;save();toast('맞아요! 일지에 기록했어요.');side_();steps()}else{b.classList.add('no');toast('달 사진과 달을 다시 돌려 보세요.','warn');$('#shapeFb').innerHTML='<p class="fb warn"><b>다시 살펴봐요.</b> 달 사진은 옆에서 보면 얇은 선이 되지만, 달은 옆에서 보아도 둥글어요.</p>'}};$('#shapeOpts').append(b)});
+    if(S.shape.ok){$('#shapeFb').innerHTML='<p class="fb"><b>맞아요.</b> 달은 <b>둥근 공 모양</b>이에요. 사진에서는 납작한 원처럼 보이지만, 돌려 보면 공 모양인 것을 알 수 있어요.</p>';allow(true,'표면 관찰하기')}};
+  const steps=()=>{if(step===1)inst('01','밤하늘의 <b>달</b>을 끌어서 망원경 가운데의 십자 표시에 맞춰 주세요.');
+    else if(step===2)inst('02','달이 흐릿해요. <b>초점 손잡이</b>를 밀어서 또렷하게 맞춰 주세요.');
+    else if(step===3)inst('03','<b>달 사진</b>과 <b>달</b>을 끌어서 함께 돌려 보세요. 옆에서 보면 어떻게 다른가요?');
+    else if(!S.shape.ok)inst('04','<b>달의 모양</b>을 골라 주세요.');
+    else inst('✓','달은 <b>둥근 공 모양</b>이에요.')};
+  // 01 망원경 맞추기: 달이 시야 한쪽에 작게 보임. 끌어서 가운데로
+  const aim=()=>{const r=SR();ox=r.w*.24;oy=-r.h*.2;V.dist=V.t.dist=9;V.az=V.t.az=0;V.el=V.t.el=0;scope(true);hand('drag');
+    const put=()=>{const r2=SR();camera.setViewOffset(r2.w,r2.h,-ox,-oy,r2.w,r2.h);camera.updateProjectionMatrix()};put();
+    onMove=(dx,dy)=>{const r2=SR();ox=Math.max(-r2.w*.45,Math.min(r2.w*.45,ox+dx));oy=Math.max(-r2.h*.45,Math.min(r2.h*.45,oy+dy));put();hand(null)};
+    onUp=()=>{const r2=SR();if(Math.hypot(ox,oy)<Math.min(r2.w,r2.h)*.09){onMove=null;onUp=null;toast('달을 망원경 가운데에 맞췄어요.','note');const t0=performance.now(),x0=ox,y0=oy;
+        frameHook=()=>{const k=Math.min(1,(performance.now()-t0)/350);ox=x0*(1-k);oy=y0*(1-k);put();if(k>=1){frameHook=null;camera.clearViewOffset();camera.updateProjectionMatrix();step=2;focus()}}}
+      else if(moved>20)toast('달이 십자 표시에 오도록 조금 더 끌어 보세요.','warn')}};
+  // 02 초점: 손잡이를 밀어 또렷해지는 곳에서 멈춤
+  const focus=()=>{scope(true).classList.add('aimed');fly(0,0,4.4);hand(null);steps();side_();const blur=()=>{canvas.style.filter=`blur(${(Math.abs(fv-FOCUS)*.16).toFixed(1)}px)`};blur();
+    const bar=el('div','',`<span>초점</span><input type="range" min="0" max="100" step="1" value="${fv}" aria-label="초점 손잡이">`);bar.id='focusBar';stageEl.append(bar);const rg=bar.querySelector('input');rg.classList.add('pulse');
+    let tm=null;rg.oninput=()=>{fv=+rg.value;blur();clearTimeout(tm);if(Math.abs(fv-FOCUS)<=4)tm=setTimeout(()=>{if(step!==2||S.stage!=='shape')return;canvas.style.filter='';bar.remove();toast('또렷하게 맞췄어요. 망원경으로 본 달이에요.','note');step=3;both()},450)}};
+  // 03 달 사진(원판)과 달(공)을 나란히 놓고 함께 돌림
+  const both=()=>{scope(false);canvas.style.filter='';fly(0,0,4.6);V.free=true;V.minD=4.0;V.maxD=5.4;if(!makeDisc()){setTimeout(()=>{if(S.stage==='shape')both()},300);return}duoScene=discScene;duo=true;
+    $$('.duo').forEach(e=>e.remove());const r=SR(),wide=r.w>=r.h;[['달 사진',wide?25:50,wide?10:10],['망원경으로 본 달',wide?75:50,wide?10:r.h/2+10]].forEach(d=>{const e=el('span','duo',d[0]);e.style.left=d[1]+'%';e.style.top=d[2]+'px';stageEl.append(e)});
+    steps();side_();if(step===3){hand('drag');acc=0;onDrag=d=>{hand(null);if(step!==3)return;acc+=d;if(acc>700){step=4;S.shape.dragged=true;steps();side_()}}}};
+  steps();side_();
+  if(step===1)aim();else both()}
 
-function foundCount(front){return SPOTS.filter(o=>S.found[o.id]&&(!front||!o.far)).length}
-function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.3);showGroup('spot');$('#zoom').classList.add('show');chip(true);
-  const list=(cur)=>{askId=cur?cur.id:null;const fr=foundCount(true),all=foundCount(false);const farOpen=fr>=5;$('#flip').style.display=farOpen?'':'none';
-   setSide(`<span class="eyebrow">관찰 2</span><h2>달 표면 관찰 기록 <span style="color:var(--pri)">${all}/6</span></h2>
-    <div class="cards" style="${cur?'display:none':''}">${SPOTS.map(o=>`<div class="${S.found[o.id]?'got':''}">${S.found[o.id]?`<span>${o.term}<small>${o.name}</small></span>`:(o.far&&!farOpen?'앞면을<br>먼저':'?')}</div>`).join('')}</div>
-    <div id="spotQ">${cur?'':'<p class="note">달을 끌어서 돌리고, [크게] 단추나 두 손가락으로 가까이 볼 수 있어요.</p>'}</div>`);
-   $('#flip').classList.toggle('pulse',farOpen&&!S.found.far);
-   if(cur)return;
-   if(all>=6){inst('✓','달 표면 관찰을 마쳤어요. <b>정리하기</b>를 눌러 주세요.');allow(true,'정리하기')}
-   else if(farOpen)inst('02','<b>뒷면</b> 단추를 누르고, 달의 뒷면에서 반짝이는 곳을 눌러 주세요.');
-   else inst('01','<b>반짝이는 곳</b>을 눌러 가까이 살펴봐 주세요.')};
-  const ask=o=>{fly(o.lon,o.lat,2.15);list(o);inst('02','가까이 본 모습을 살펴보고, <b>알맞은 것</b>을 골라 주세요.');const q=$('#spotQ');const opts=o.opts||Q3;
-   q.innerHTML=`<h3>${esc(o.q||'가까이 본 이곳은 어떻게 보이나요?')}</h3>${o.img?`<img src="${o.img}" alt="가까이 본 달 표면 사진" style="width:100%;max-height:24vh;object-fit:cover;border-radius:14px;margin:8px 0 2px;display:block">`:''}<div class="opts" style="margin-top:8px"></div><div id="spotFb" style="margin-top:10px;display:flex;flex-direction:column;gap:10px"></div>`;
-   opts.forEach((t,i)=>{const b=el('button','opt',esc(t));b.onclick=()=>{if(i===o.ans){b.classList.add('ok');const first=!S.found[o.id];S.found[o.id]=true;save();
-      $('#spotFb').innerHTML=`<p class="fb">${o.say}</p><div class="row">${T.has(o.id)?'<button class="btn pulse" id="spotDown">표면 가까이 내려가 보기</button>':''}<button class="btn ${T.has(o.id)?'line':''}" id="spotBack">계속 관찰하기</button></div>`;
-      $('#spotBack').onclick=()=>{fly(V.t.az,V.t.el,4.0);list()};if(T.has(o.id))$('#spotDown').onclick=()=>down(o);side.scrollTop=side.scrollHeight;
-      inst('03',T.has(o.id)?'<b>표면 가까이 내려가 보기</b>를 눌러 둘러보거나, 계속 관찰해 주세요.':'<b>계속 관찰하기</b>를 눌러 주세요.');
-      if(first)toast('맞아요! 일지에 기록했어요.');if(foundCount(false)>=6)allow(true,'정리하기')}
-     else{b.classList.add('no');toast('달 표면을 다시 살펴보세요.','warn');$('#spotFb').innerHTML='<p class="fb warn"><b>다시 살펴봐요.</b> 밝기와 모양을 잘 보세요.</p>'}};q.querySelector('.opts').append(b)})};
-  const down=o=>{$('#flip').style.display='none';chip(false);snd('down');T.enter(o.id,()=>{
-    setSide(`<span class="eyebrow">관찰 2 · 가까이 보기</span><h2>${o.term}</h2><p>${NEAR[o.id]}</p>
-     <p class="note">높낮이가 잘 보이도록 실제보다 2배 높게 나타냈어요.</p>
-     <div class="row"><button class="btn" id="spotUp">달 전체로 돌아가기</button></div>`);
-    inst('01','화면을 <b>끌어서</b> 둘러보고, <b>크게</b> 단추나 두 손가락으로 더 가까이 봐 주세요.');
-    hand('drag');let acc=0;onDrag=d=>{acc+=d;if(acc>200){hand(null);onDrag=()=>{}}};
-    $('#spotUp').onclick=()=>{hand(null);onDrag=()=>{};T.exit(()=>{chip(true);fly(V.t.az,V.t.el,4.0);list()})}})};
-  onTap=(x,y)=>{const s=pickSprite(x,y);if(s&&s.userData.group==='spot'){hand(null);ask(s.userData.o)}};
-  list()}
+/* 관찰 2: 임무를 하나씩 받아 달에서 직접 찾아 찍기 */
+const angDist=(la1,lo1,la2,lo2)=>Math.acos(Math.max(-1,Math.min(1,Math.sin(la1*D2R)*Math.sin(la2*D2R)+Math.cos(la1*D2R)*Math.cos(la2*D2R)*Math.cos((lo1-lo2)*D2R))))/D2R;
+const viewLL=()=>({lat:V.el,lon:((V.az+180)%360+360)%360-180});
+function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.3);showSpots([]);$('#zoom').classList.add('show');chip(true);
+  const frame=$('#camFrame'),shootB=$('#shoot');
+  let mode='find',tmp=null,t0=performance.now(),t1=0,misses=0,level=0;
+  const cur=()=>MISS.find(m=>!S.shots[m.id]);
+  const doneN=()=>MISS.filter(m=>S.shots[m.id]).length;
+  const fsz=()=>{const r=SR(),f=Math.min(r.w,r.h)*.52;frame.style.setProperty('--fs',f+'px');return f};
+  // 화면에서 달 표면 1(달 반지름)이 차지하는 화소 수, 틀의 반쪽이 가리는 각도(도)
+  const scale=()=>{const r=SR();return(r.h/2)/Math.tan(16*D2R)/(V.dist-1)};
+  const halfDeg=()=>Math.min(60,(fsz()/2)/scale()/D2R);
+  function judge(kind){const c=viewLL(),hd=halfDeg();
+    if(kind==='far')return Math.cos(c.lon*D2R)*Math.cos(c.lat*D2R)<-.15;
+    if(kind==='dark'||kind==='bright'){if(!GRID.l)return true;const L=gMean(GRID.l,c.lat,c.lon,Math.max(2,hd*.55));return kind==='dark'?L<=DARK_MAX:L>=BRIGHT_MIN}
+    // 구덩이: 목록의 구덩이가 틀 안에 충분한 크기로 들어왔거나, 높이 자료에서 틀 가운데가 둘레보다 낮으면 인정
+    const f=fsz(),sc=scale();for(const k of CRATERS){if(angDist(c.lat,c.lon,k[0],k[1])<=hd*.95&&k[2]/1737.4*sc>=f*.08)return true}
+    if(GRID.h&&hd<24){for(const dy of[-.3,0,.3])for(const dx of[-.3,0,.3]){const la=c.lat+dy*hd,lo=c.lon+dx*hd/Math.max(.3,Math.cos(la*D2R));const mid=gMean(GRID.h,la,lo,.5);for(const rr of[1.2,2,3.2]){if(rr>hd)continue;let ring=0;for(let i=0;i<12;i++){const t=i/12*6.2832;ring+=gAt(GRID.h,la+rr*Math.sin(t),lo+rr*Math.cos(t)/Math.max(.3,Math.cos(la*D2R)))}if(ring/12-mid>=9)return true}}}
+    return false}
+  const snapshot=()=>{const r=SR(),f=fsz(),pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=320;const vs=sprites.filter(q=>q.visible);vs.forEach(q=>q.visible=false);renderer.render(scene,camera);vs.forEach(q=>q.visible=true);o.getContext('2d').drawImage(canvas,(r.w-f)/2*pr,(r.h-f)/2*pr,f*pr,f*pr,0,0,320,320);return o.toDataURL('image/jpeg',.8)};
+  const nearPatch=sh=>{let best=null,bd=22;for(const o of SPOTS){if(!T.has(o.id))continue;const d=angDist(sh.lat,sh.lon,o.lat,o.lon);if(d<bd){bd=d;best=o}}return best};
+  const slots=()=>`<div class="shots">${MISS.map((m,i)=>{const sh=S.shots[m.id],c=cur();return`<div class="slot${sh?' got':(c&&c.id===m.id?' now':'')}" data-m="${m.id}"><span class="ph" style="${sh&&sh.img?`background-image:url(${sh.img})`:''}">${sh?(sh.img?'':ic('check')):i+1}</span><span>${sh?m.term:m.name}</span></div>`}).join('')}</div>`;
+  const startFind=()=>{mode='find';tmp=null;t0=performance.now();misses=0;level=0;showSpots([]);$('#flip').classList.remove('pulse');paint()};
+  const paint=()=>{const m=cur();fsz();
+    frame.classList.toggle('show',mode==='find'&&!!m);shootB.classList.toggle('show',mode==='find'&&!!m);
+    $('#flip').style.display=(S.shots.m3||!m)?'':'none';
+    if(mode==='find'){setSide(`<span class="eyebrow">관찰 2</span><h2>달 표면 관찰 기록 <span style="color:var(--pri)">${doneN()}/4</span></h2>${slots()}
+      <div id="spotQ">${m?`<p class="fb" style="background:var(--soft2)"><b style="color:var(--pri)">찾을 곳</b> ${m.name}</p><p class="note">달을 끌어서 돌리고, [크게] 단추나 두 손가락으로 다가갈 수 있어요. 찍고 싶은 곳이 틀 안에 오면 [찍기]를 눌러요.</p>`:'<p class="fb"><b>관찰 끝!</b> 찍은 사진은 정리할 때 다시 써요. 달을 더 살펴봐도 좋아요.</p>'}</div>`);
+      if(m)inst('0'+(MISS.indexOf(m)+1),m.ask);else{inst('✓','달 표면 관찰을 마쳤어요. <b>정리하기</b>를 눌러 주세요.');allow(true,'정리하기')}
+      if(m&&m.kind==='far'&&Math.cos(V.t.az*D2R)>0)$('#flip').classList.add('pulse')}};
+  // 찍은 뒤 설명 칸
+  const after=m=>{mode='after';showSpots([]);frame.classList.remove('show');shootB.classList.remove('show');const sh=S.shots[m.id],pt=nearPatch(sh),last=!cur();
+    setSide(`<span class="eyebrow">관찰 2</span><h2>달 표면 관찰 기록 <span style="color:var(--pri)">${doneN()}/4</span></h2>${slots()}
+     <p class="fb">${m.say}</p>
+     <div class="cmp"><figure><img src="${sh.img||m.img}" alt="내가 찍은 사진">내가 찍은 사진</figure><figure><img src="${m.img}" alt="교과서 사진">${m.img.includes('tb_')?'교과서 사진':'가까이 본 사진'}</figure></div>
+     <div class="row">${pt?'<button class="btn line" id="spotDown">표면 가까이 내려가 보기</button>':''}<button class="btn pulse" id="spotNext">${last?'관찰 마치기':'다음 찾기'}</button></div>`);
+    inst('0'+(MISS.indexOf(m)+1),'내가 찍은 사진을 교과서 사진과 견주어 보고, <b>'+(last?'관찰 마치기':'다음 찾기')+'</b>를 눌러 주세요.');
+    $('#spotNext').onclick=()=>{fly(V.t.az,V.t.el,Math.max(V.t.dist,3.6));startFind()};
+    if(pt)$('#spotDown').onclick=()=>{$('#flip').style.display='none';chip(false);snd('down');T.enter(pt.id,()=>{
+      setSide(`<span class="eyebrow">관찰 2 · 가까이 보기</span><h2>${pt.term}</h2><p>${NEAR[pt.id]}</p><p class="note">높낮이가 잘 보이도록 실제보다 2배 높게 나타냈어요.</p><div class="row"><button class="btn" id="spotUp">달 전체로 돌아가기</button></div>`);
+      inst('01','화면을 <b>끌어서</b> 둘러보고, <b>크게</b> 단추나 두 손가락으로 더 가까이 봐 주세요.');hand('drag');let acc=0;onDrag=d=>{acc+=d;if(acc>200){hand(null);onDrag=()=>{}}};
+      $('#spotUp').onclick=()=>{hand(null);onDrag=()=>{};T.exit(()=>{chip(true);after(m)})}})}};
+  // 뒷면: 찍은 뒤 앞면과 다른 점 고르기
+  const askFar=m=>{mode='after';frame.classList.remove('show');shootB.classList.remove('show');
+    setSide(`<span class="eyebrow">관찰 2</span><h2>달 표면 관찰 기록 <span style="color:var(--pri)">${doneN()}/4</span></h2>${slots()}
+     <div class="cmp"><figure><img src="${tmp.img}" alt="내가 찍은 사진">내가 찍은 달의 뒷면</figure><figure><img src="${m.img}" alt="교과서 사진">교과서 사진</figure></div>
+     <h3>${m.q}</h3><div class="opts" id="farOpts"></div><div id="spotFb"></div>`);
+    inst('04','내가 찍은 뒷면 사진을 보고, 앞면과 <b>다른 점</b>을 골라 주세요.');
+    m.opts.forEach((t,i)=>{const b=el('button','opt',esc(t));b.onclick=()=>{if(i===m.ans){S.shots[m.id]=tmp;save();toast('맞아요! 일지에 기록했어요.');after(m)}else{b.classList.add('no');toast('사진을 다시 살펴보세요.','warn');$('#spotFb').innerHTML='<p class="fb warn"><b>다시 살펴봐요.</b> 어두운 곳이 얼마나 있는지, 구덩이가 얼마나 많은지 보세요.</p>'}};$('#farOpts').append(b)})};
+  shootB.onclick=()=>{const m=cur();if(!m||mode!=='find')return;snd('shutter');const fl=$('#flashS');fl.style.opacity=.85;setTimeout(()=>fl.style.opacity=0,110);
+    // 달 전체가 보이는 거리에서는 찾지 않고도 맞을 수 있어서, 다가가서 찍게 함(뒷면 임무는 예외)
+    if(m.kind!=='far'&&V.dist>3.7){misses++;toast('<b>크게</b>로 조금 더 다가가서 찍어 볼까요?','warn');$('#zin').classList.add('pulse');setTimeout(()=>$('#zin').classList.remove('pulse'),2600);return}
+    if(!judge(m.kind)){misses++;toast(m.miss,'warn');return}
+    const c=viewLL(),sh={img:snapshot(),lat:+c.lat.toFixed(2),lon:+c.lon.toFixed(2)};
+    // 찍은 사진이 기록 칸으로 날아감
+    const r=SR(),f=fsz(),slot=$(`.slot[data-m=${m.id}] .ph`);if(slot){const to=slot.getBoundingClientRect(),g=el('img','flyimg');g.src=sh.img;g.style.cssText=`left:${r.x+(r.w-f)/2}px;top:${r.y+(r.h-f)/2}px;width:${f}px;height:${f}px`;document.body.append(g);requestAnimationFrame(()=>requestAnimationFrame(()=>{g.style.left=to.left+'px';g.style.top=to.top+'px';g.style.width=to.width+'px';g.style.height=to.height+'px'}));setTimeout(()=>g.remove(),650)}
+    mode='wait';setTimeout(()=>{if(S.stage!=='surface')return;if(m.kind==='far'){tmp=sh;askFar(m)}else{S.shots[m.id]=sh;save();toast('찰칵! 일지에 기록했어요.');after(m)}},600)};
+  // 단계적 도움: 20초 동안 못 찍거나 두 번 맞지 않으면 반짝임, 다시 20초 뒤에는 그곳으로 돌려 줌
+  frameHook=()=>{if(S.stage!=='surface'||mode!=='find'||T.on)return;const m=cur();if(!m)return;const now=performance.now();
+    if(level===0&&(now-t0>20000||misses>=2)){level=1;t1=now;if(m.kind==='far'&&Math.cos(V.t.az*D2R)>0){$('#flip').classList.add('pulse');toast('<b>뒷면</b> 단추를 눌러 보세요.','note')}else{showSpots(m.hints);toast('반짝이는 곳을 살펴보세요.','note')}}
+    else if(level===1&&now-t1>20000){level=2;const o=SPOTS.find(x=>x.id===m.hints[0]);showSpots(m.hints);fly(o.lon,o.lat,m.kind==='crater'?2.3:3.0);toast('달을 돌려 주었어요. 틀에 맞으면 <b>찍기</b>를 눌러 주세요.','note')}};
+  onDrag=()=>{hand(null)};
+  if(cur()&&!doneN())hand('drag');
+  startFind()}
 
 function sWrap(){$('#wrap').classList.add('show');const blanks=$$('#wrap .blank');const words=['둥근 공','어두운 곳','울퉁불퉁한','충돌 구덩이','달의 바다','납작한 원','매끈매끈한','달의 호수'];
-  let cur=null;const bank=$('#bank');bank.innerHTML='';
-  const done=()=>{$('#think').style.display='flex';bank.style.display='none';$('#wrapHint').textContent='관찰한 내용을 잘 정리했어요.';allow(true,'창의 활동')};
-  const result=()=>{S.wrapSeen=true;save();pop(`<span class="eyebrow">관찰로 발견했어요</span><h2>달은 둥근 공 모양이고,<br>표면은 울퉁불퉁해요.</h2>
-    <div class="grid2"><div class="rc"><span class="tg">관찰하기 전 내 예상</span><p>${S.pred!=null?esc(PRED[S.pred][0]):'예상을 고르지 않았어요.'}</p></div>
-    <div class="rc"><span class="tg">망원경으로 관찰한 결과</span><p>달 표면에는 어두운 곳과 밝은 곳이 있고, 충돌 구덩이가 많았어요.</p></div></div>
-    <p class="note">내 예상과 관찰한 결과를 견주어 보세요.</p><div class="row" style="justify-content:flex-end"><button class="btn dark" id="resOk">알겠어요</button></div>`);$('#resOk').onclick=closePop};
-  const check=()=>{if(blanks.every(b=>b.textContent===b.dataset.a)){S.wrapOk=true;save();snd('ok');done();setTimeout(result,500)}};
+  let cur=null;const bank=$('#bank'),pinBox=$('#pinBox'),vsBox=$('#vsBox');bank.innerHTML='';
+  // 사진을 붙일 자리: 문장의 낱말 ← 그 임무에서 내가 찍은 사진
+  const PINS=[['m1','어두운 곳'],['m2','울퉁불퉁한 면'],['m3','충돌 구덩이']].filter(x=>S.shots[x[0]]&&S.shots[x[0]].img);
+  const pinsDone=()=>PINS.every(x=>S.pins[x[0]]);
+  const finish=()=>{$('#think').style.display='flex';allow(true,'창의 활동')};
+  // 맨 아래: 내 예상 카드와 내가 찍은 사진을 나란히
+  const versus=()=>{const sh=['m3','m2','m1'].map(k=>S.shots[k]).find(x=>x&&x.img);vsBox.style.display='flex';
+    vsBox.innerHTML=`<span class="eyebrow">예상과 견주기</span><p><b>내 예상과 같았나요?</b></p>
+     <div class="vs"><figure><span class="tg">관찰하기 전 내 예상</span>${S.pred!=null?`<img src="assets/${PRED[S.pred][1]}.png" alt=""><span>${esc(PRED[S.pred][0])}</span>`:'<span>예상을 고르지 않았어요.</span>'}</figure>
+     <figure><span class="tg">내가 찍은 달</span>${sh?`<img src="${sh.img}" alt="내가 찍은 달 사진">`:''}<span>달 표면에는 어두운 곳과 밝은 곳이 있고, 충돌 구덩이가 많았어요.</span></figure></div>
+     <div class="row"><button class="opt${S.predSame==='same'?' ok':''}" id="sameY" style="flex:1;text-align:center">같았어요</button><button class="opt${S.predSame==='diff'?' ok':''}" id="sameN" style="flex:1;text-align:center">달랐어요</button></div>`;
+    $('#sameY').onclick=()=>{S.predSame='same';save();snd('note');versus()};$('#sameN').onclick=()=>{S.predSame='diff';save();snd('note');versus()}};
+  // 사진 붙이기: 사진을 누른 뒤 자리를 누르거나, 끌어다 놓음
+  const pins=()=>{if(!PINS.length){versus();finish();return}pinBox.style.display='flex';let sel=null;
+    const left=PINS.filter(x=>!S.pins[x[0]]);
+    pinBox.innerHTML=`<span class="eyebrow">내가 찍은 사진 붙이기</span><p class="note" id="pinHint">${left.length?'사진을 누른 뒤 알맞은 자리를 누르거나, 사진을 끌어다 놓아 주세요.':'문장에 내 사진을 모두 붙였어요.'}</p>
+     <div class="pins">${PINS.map(x=>`<div class="pin${S.pins[x[0]]?' ok':''}" data-s="${x[0]}"><span class="ph" style="${S.pins[x[0]]?`background-image:url(${S.shots[x[0]].img})`:''}">${S.pins[x[0]]?'':'사진 자리'}</span><span>${x[1]}</span></div>`).join('')}</div>
+     <div class="tray">${left.slice().sort((a,b)=>a[1].length-b[1].length).map(x=>`<img src="${S.shots[x[0]].img}" data-p="${x[0]}" alt="내가 찍은 사진" draggable="false">`).join('')}</div>`;
+    const put=(pid,sid,slotEl)=>{if(pid===sid){S.pins[sid]=true;save();snd('ok');pins();if(pinsDone()){toast('문장에 내 사진을 모두 붙였어요.');versus();finish()}}else{slotEl.classList.add('no');setTimeout(()=>slotEl.classList.remove('no'),320);toast('사진을 다시 살펴보고 알맞은 자리를 찾아보세요.','warn')}};
+    pinBox.querySelectorAll('.pin:not(.ok)').forEach(e=>e.onclick=()=>{if(!sel){toast('먼저 사진을 눌러 주세요.','warn');return}put(sel,e.dataset.s,e)});
+    pinBox.querySelectorAll('.tray img').forEach(im=>{let g=null,mv=0;
+      im.onpointerdown=e=>{im.setPointerCapture(e.pointerId);mv=0;sel=im.dataset.p;pinBox.querySelectorAll('.tray img').forEach(x=>x.classList.toggle('sel',x===im))};
+      im.onpointermove=e=>{if(!im.hasPointerCapture(e.pointerId))return;mv+=Math.abs(e.movementX)+Math.abs(e.movementY);if(mv>10&&!g){g=el('img','dragimg');g.src=im.src;document.body.append(g)}if(g){g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'}};
+      im.onpointerup=im.onpointercancel=e=>{if(g){g.remove();g=null;const t=document.elementFromPoint(e.clientX,e.clientY),slot=t&&t.closest('.pin:not(.ok)');if(slot)put(im.dataset.p,slot.dataset.s,slot)}}});
+    if(pinsDone()){versus();finish()}};
+  const done=()=>{bank.style.display='none';$('#wrapHint').textContent='관찰한 내용을 잘 정리했어요.';pins()};
+  const check=()=>{if(blanks.every(b=>b.textContent===b.dataset.a)){S.wrapOk=true;save();toast('모두 맞았어요! 이제 내가 찍은 사진을 붙여 보세요.');done()}};
   const sel=b=>{blanks.forEach(x=>x.classList.remove('sel'));cur=b;if(b)b.classList.add('sel')};
   blanks.forEach(b=>{b.textContent=S.wrapOk?b.dataset.a:'';b.className='blank'+(S.wrapOk?' ok':'');b.onclick=()=>{if(b.classList.contains('ok'))return;sel(b)}});
   words.sort(()=>Math.random()-.5).forEach(w=>{const k=el('button','',w);k.onclick=()=>{if(!cur){toast('먼저 빈칸을 눌러 주세요.','warn');return}if(cur.dataset.a===w){cur.textContent=w;cur.classList.add('ok');cur.classList.remove('sel');k.classList.add('used');const nx=blanks.find(b=>!b.classList.contains('ok'));sel(nx||null);check()}else{k.style.animation='shake .3s';setTimeout(()=>k.style.animation='',300);toast('관찰한 내용을 떠올려 보세요.','warn')}};bank.append(k)});
-  if(S.wrapOk)done();else{bank.style.display='';$('#think').style.display='none';$('#wrapHint').textContent='빈칸을 누른 뒤, 아래에서 알맞은 낱말을 골라 주세요.';sel(blanks[0])}
+  pinBox.style.display='none';vsBox.style.display='none';$('#think').style.display='none';
+  if(S.wrapOk)done();else{bank.style.display='';$('#wrapHint').textContent='빈칸을 누른 뒤, 아래에서 알맞은 낱말을 골라 주세요.';sel(blanks[0])}
   const ta=$('#thinkTxt');ta.value=S.think;ta.oninput=()=>{S.think=ta.value;save()};$('#thinkEx').style.display='none';$('#bThinkEx').onclick=()=>$('#thinkEx').style.display=''}
 
 /* 창의 활동 A */
@@ -674,7 +858,7 @@ function sActA(){V.sunMode='flat';fly(0,0,4.2);strokes=[];const d=$('#draw');d.c
   const saveDraw=()=>{const r=SR(),sz=Math.min(r.h*.92,r.w*.92),sx=(r.w-sz)/2,sy=(r.h-sz)/2;const o=document.createElement('canvas');o.width=o.height=480;const x=o.getContext('2d');const pr=canvas.width/r.w;renderer.render(scene,camera);x.drawImage(canvas,sx*pr,sy*pr,sz*pr,sz*pr,0,0,480,480);const dr=$('#draw'),dp=dr.width/r.w;x.drawImage(dr,sx*dp,sy*dp,sz*dp,sz*dp,0,0,480,480);S.draw=o.toDataURL('image/jpeg',.85);S.drawName=$('#aName').value.trim();save();toast('일지에 붙였어요.','note');$('#aSave').classList.remove('pulse');$('#aFb').innerHTML='<p class="fb"><b>기록됨</b> 「'+esc(S.drawName)+'」 친구가 본 모양과 비교해 봐요.</p>';side.scrollTop=side.scrollHeight;inst('✓','일지에 붙였어요. <b>다음</b>을 눌러 주세요.');allow(true,'다음')};
   paint()}
 
-function sMore(){$('#more').classList.add('show');$('#pickC').classList.toggle('done',!!S.site);$('#pickB').classList.toggle('done',S.bDone);$('#pickC').onclick=()=>go('actC');$('#pickB').onclick=()=>go('actB');allow(true,'마무리하기');nextBtn.classList.remove('pulse')}
+function sMore(){$('#more').classList.add('show');$('#pickC').classList.toggle('done',!!S.site);$('#pickB').classList.toggle('done',!!S.clay);$('#pickD').classList.toggle('done',!!S.photo);$('#pickD').onclick=()=>go('actD');$('#pickC').onclick=()=>go('actC');$('#pickB').onclick=()=>go('actB');allow(true,'마무리하기');nextBtn.classList.remove('pulse')}
 
 /* 더 해 보기 C */
 function sActC(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.3);showGroup('site');$('#zoom').classList.add('show');chip(true);$('#flip').style.display='';allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
@@ -694,25 +878,127 @@ function sActC(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.
   onTap=(x,y)=>{const s=pickSprite(x,y);if(s&&s.userData.group==='site')pickSite(s.userData.o.id)};
   draw()}
 
-/* 더 해 보기 B */
-function sActB(){$('#actB').classList.add('show');allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
-  const c=$('#impact'),x=c.getContext('2d'),W=c.width,H=c.height,G=H*.66;let craters=[],rocks=[],dust=[],stars=[...Array(60)].map(()=>[Math.random()*W,Math.random()*G*.9,Math.random()*1.5+.3]);
-  const rockImg=new Image();rockImg.src='assets/rock.png';
-  const after=()=>{$('#bAfter').style.display='flex';$('#bGuide').textContent='돌이 부딪친 자리가 어떻게 되었는지 살펴보세요.'};
-  $('#bEx').style.display='none';
-  if(S.bDone){after();$('#bTxt').value=S.bTxt}else{$('#bAfter').style.display='none';$('#bGuide').textContent='달 표면 모형의 하늘을 눌러 돌을 떨어뜨려 주세요. (3번)'}
-  c.onpointerdown=e=>{const r=c.getBoundingClientRect();const px=(e.clientX-r.left)/r.width*W;if(rocks.length>2)return;rocks.push({x:px,y:-30,v:0,s:22+Math.random()*10})};
-  $('#bBEx').onclick=()=>$('#bEx').style.display='';$('#bBDone').onclick=()=>{S.bDone=true;S.bTxt=$('#bTxt').value;save();toast('일지에 기록했어요.','note')};
-  let tb=performance.now();frameHook=()=>{if(S.stage!=='actB')return;const now=performance.now(),f=Math.min(4,(now-tb)/16.7);tb=now;x.fillStyle='#05081a';x.fillRect(0,0,W,H);x.fillStyle='#fff';stars.forEach(s=>{x.globalAlpha=.7;x.fillRect(s[0],s[1],s[2],s[2])});x.globalAlpha=1;
-   const g=x.createLinearGradient(0,G,0,H);g.addColorStop(0,'#b9bcc4');g.addColorStop(1,'#6f7380');x.fillStyle=g;x.beginPath();x.moveTo(0,G);for(let i=0;i<=W;i+=20)x.lineTo(i,G+Math.sin(i*.021)*5+Math.sin(i*.07)*2);x.lineTo(W,H);x.lineTo(0,H);x.fill();
-   craters.forEach(k=>{x.fillStyle='#4a4e5a';x.beginPath();x.ellipse(k.x,G+20,k.r,k.r*.32,0,0,7);x.fill();x.strokeStyle='#e4e6ec';x.lineWidth=4;x.beginPath();x.ellipse(k.x,G+19,k.r,k.r*.32,0,Math.PI,2*Math.PI);x.stroke();x.fillStyle='#343742';x.beginPath();x.ellipse(k.x-k.r*.12,G+22,k.r*.7,k.r*.2,0,0,7);x.fill()});
-   rocks=rocks.filter(r=>!r.hit);rocks.forEach(r=>{r.v+=.55*f;r.y+=r.v*f;if(rockImg.complete&&rockImg.naturalWidth)x.drawImage(rockImg,r.x-r.s,r.y-r.s,r.s*2,r.s*2);else{x.fillStyle='#8a7f72';x.beginPath();x.arc(r.x,r.y,r.s*.7,0,7);x.fill()}
-     if(r.y>G+12){craters.push({x:r.x,r:r.s*2.1});snd('thud');for(let i=0;i<26;i++)dust.push({x:r.x,y:G+14,vx:(Math.random()-.5)*9,vy:-Math.random()*8-2,l:1});r.hit=true;if(craters.length>=3&&!$('#bAfter').style.display.includes('flex')){toast('돌이 부딪친 자리마다 구덩이가 생겼어요.','note');after()}}});
-   dust=dust.filter(d=>d.l>0);dust.forEach(d=>{d.x+=d.vx*f;d.y+=d.vy*f;d.vy+=.18*f;d.l-=.02*f;x.globalAlpha=Math.max(0,d.l);x.fillStyle='#d9dbe2';x.beginPath();x.arc(d.x,d.y,3,0,7);x.fill()});x.globalAlpha=1}}
+/* 더 해 보기 D: 달 사진 찍기 — 스마트폰을 망원경에 대고, 갤럭시 카메라의 프로 모드로 밝기를 맞춰 찍는 과정을 그대로 눌러 봄 */
+const SEEN=['어두운 곳(달의 바다)','밝은 곳','충돌 구덩이'];
+const ISO_V=[50,100,200,400,800,1600,3200],SPD_V=[10,30,60,125,180,250,350,500,1000,2000,4000];   // SPEED는 1/값 초
+const HOW_GALAXY=['카메라 앱 아래쪽에서 <b>더보기</b> → <b>프로</b>를 눌러요.','<b>ISO</b>를 누르고 막대를 <b>50</b>까지 내려요.','<b>SPEED</b>를 누르고 <b>1/350</b>쯤으로 맞춰요. 달이 하얗게 보이면 숫자를 더 크게 해요.','흔들리지 않게 잡고 찍어요. 2초 타이머를 쓰면 좋아요.'];
+const HOW_IPHONE='아이폰은 프로 모드가 없어요. 화면 속 달을 <b>길게 눌러</b> 노란 네모가 생기면, 옆의 <b>해 모양</b>을 아래로 끌어 내려 어둡게 해요.';
+function sActD(){V.sunMode='relief';V.free=false;fly(0,0,5.6);V.az=0;V.el=0;allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
+  const ui=el('div','',`<div class="mask"></div><span class="lbl">망원경의 들여다보는 곳</span>
+   <div class="phone hint"><span class="cam"></span><canvas width="360" height="360"></canvas>
+    <div class="pui"><div class="prow"><button data-p="iso" data-q="1"><small>ISO</small><b></b></button><button data-p="spd" data-q="1"><small>SPEED</small><b></b></button><button disabled><small>EV</small><b>0.0</b></button><button disabled><small>FOCUS</small><b>자동</b></button><button disabled><small>WB</small><b>자동</b></button></div>
+     <div class="pslide"><b></b><input type="range" min="0" max="6" step="1" aria-label="값 맞추기"></div>
+     <div class="pmode"></div><button class="shut" aria-label="찍기" data-q="1"></button></div></div><div class="flash"></div>`);ui.id='photoUI';stageEl.append(ui);
+  const ph=ui.querySelector('.phone'),cv=ph.querySelector('canvas'),cx=cv.getContext('2d'),shut=ph.querySelector('.shut'),pmode=ph.querySelector('.pmode'),psl=ph.querySelector('.pslide'),rng=psl.querySelector('input'),pIso=ph.querySelector('[data-p=iso]'),pSpd=ph.querySelector('[data-p=spd]');
+  const CY=.36;let step=S.photo?6:1,er=100,pos=null,grab=null,iso=6,spd=0,auto=true,cur=null,more=false;
+  // 밝기: 값이 낮을수록(ISO), 빠를수록(SPEED) 어두워짐. 1이 알맞음
+  const bright=()=>auto?3.4:Math.min(3.6,Math.sqrt(350/SPD_V[spd])*Math.pow(ISO_V[iso]/50,.35));
+  // 크게 볼 때는 스마트폰을 가로로 눕힘(무대가 낮아 세로로는 글자가 너무 작아짐)
+  const size=()=>{const r=SR();er=Math.min(r.w*.4,r.h*.27);ui.style.setProperty('--cy',r.h*CY+'px');ui.style.setProperty('--er',er+'px');camera.setViewOffset(r.w,r.h,0,r.h*(.5-CY),r.w,r.h);camera.updateProjectionMatrix();
+    const big=step>1,phH=big?Math.min(r.h-14,460):Math.max(190,Math.min(r.h*.6,440)),pw=big?Math.min(r.w-14,phH*2.25):Math.min(phH*.56,r.w*.94);ui.style.setProperty('--ph',phH+'px');ui.style.setProperty('--pw',pw+'px');ph.classList.toggle('big',big);
+    if(big)pos={x:(r.w-pw)/2,y:(r.h-phH)/2};else if(!pos)pos={x:Math.max(8,r.w-pw-70),y:Math.max(8,r.h-phH-12)};ph.style.left=pos.x+'px';ph.style.top=pos.y+'px'};
+  const off=()=>{if(step>1)return{dx:0,dy:0};const r=SR();return{dx:pos.x+ph.offsetWidth/2-r.w/2,dy:pos.y+26-r.h*CY}};
+  const side_=()=>{setSide(`<span class="eyebrow">더 해 보기</span><h2>달 사진을 찍어 볼까요?</h2>
+    ${S.photo?`<img class="shotimg" src="${S.photo}" alt="내가 찍은 달 사진"><h3>내가 찍은 사진에서 무엇이 보이나요?</h3><p class="note">보이는 것을 모두 골라요.</p><div class="opts">${SEEN.map((t,i)=>`<button class="opt${S.photoFound.includes(i)?' ok':''}" data-f="${i}">${t}</button>`).join('')}</div>`:'<p>스마트폰을 망원경에 대면 달 표면을 사진으로 남길 수 있어요. 스마트폰 화면의 단추를 차례대로 눌러 보세요.</p>'}
+    <h3>진짜 스마트폰으로 찍을 때</h3><p class="note">갤럭시 스마트폰</p><ol class="howto">${HOW_GALAXY.map(t=>'<li>'+t+'</li>').join('')}</ol>
+    <p class="note">아이폰</p><p class="howto" style="padding-left:14px">${HOW_IPHONE}</p>
+    <p class="note">망원경이 없으면 가장 멀리 당겨 찍는 렌즈로 바꿔서 해 봐요. 밤에는 어른과 함께 해요.</p>
+    ${S.photo?'<div class="row"><button class="btn line" id="dAgain">다시 찍기</button></div>':''}`);
+    $$('#side [data-f]').forEach(b=>b.onclick=()=>{const i=+b.dataset.f,k=S.photoFound.indexOf(i);k<0?S.photoFound.push(i):S.photoFound.splice(k,1);save();const sc=side.scrollTop;side_();side.scrollTop=sc});
+    const a=$('#dAgain');if(a)a.onclick=()=>{S.photo=null;S.photoFound=[];save();go('actD')}};
+  const modes=()=>{const pro=step>=3;ph.classList.toggle('pro',pro);pmode.innerHTML=(more||pro?[['photo','사진'],['pro','프로'],['prov','프로 동영상']]:[['photo','사진'],['video','동영상'],['more','더보기']]).map(m=>`<button data-m="${m[0]}" data-q="1" class="${(pro?m[0]==='pro':m[0]==='photo')?'on':''}${step===2&&m[0]===(more?'pro':'more')?' tgt':''}">${m[1]}</button>`).join('');
+    pmode.querySelectorAll('button').forEach(b=>b.onclick=()=>{const m=b.dataset.m;if(step!==2){snd('click');return}if(m==='more'){more=true;snd('click');modes()}else if(m==='pro'){step=3;auto=true;snd('note');draw()}else toast(more?'<b>프로</b>를 눌러 주세요.':'<b>더보기</b>를 눌러 주세요.','warn')})};
+  const draw=()=>{ph.classList.toggle('hint',step===1);modes();
+    pIso.querySelector('b').textContent=(auto&&step<4?'자동 ':'')+ISO_V[iso];pSpd.querySelector('b').textContent=(auto?'자동 ':'')+'1/'+SPD_V[spd];
+    pIso.classList.toggle('on',cur==='iso');pSpd.classList.toggle('on',cur==='spd');pIso.classList.toggle('tgt',step===3&&cur!=='iso');pSpd.classList.toggle('tgt',step===4&&cur!=='spd');
+    psl.classList.toggle('on',!!cur&&step<6);if(cur){rng.max=cur==='iso'?6:10;rng.value=cur==='iso'?iso:spd;psl.querySelector('b').textContent=cur==='iso'?'ISO '+ISO_V[iso]:'1/'+SPD_V[spd]}
+    shut.classList.toggle('on',step===5);
+    if(step===1)inst('01','<b>스마트폰</b>을 끌어서 <b>카메라 동그라미</b>를 망원경의 들여다보는 곳 가운데에 대 주세요.');
+    else if(step===2)inst('02',more?'달이 하얗게만 보여요. <b>프로</b>를 눌러 주세요.':'달이 하얗게만 보여요. 아래쪽의 <b>더보기</b>를 눌러 주세요.');
+    else if(step===3)inst('03',cur==='iso'?'막대를 끌어서 ISO를 <b>50</b>까지 내려 주세요.':'<b>ISO</b>를 눌러 주세요.');
+    else if(step===4)inst('04',cur==='spd'?'막대를 끌어서 SPEED를 <b>1/350</b>쯤으로 맞춰 주세요. 달 표면이 보이면 돼요.':'아직 밝아요. <b>SPEED</b>를 눌러 주세요.');
+    else if(step===5)inst('05','달 표면이 잘 보여요. <b>흰 단추</b>를 눌러 찰칵 찍어 주세요.');
+    else inst('✓','달 사진을 찍어 일지에 붙였어요. 사진에서 <b>무엇이 보이는지</b> 골라 보세요.')};
+  // 01 스마트폰 끌어서 대기
+  ph.onpointerdown=e=>{if(step!==1)return;ph.setPointerCapture(e.pointerId);grab={x:e.clientX-pos.x,y:e.clientY-pos.y};ph.classList.remove('hint');ph.classList.add('drag')};
+  ph.onpointermove=e=>{if(!grab)return;const r=SR();pos.x=Math.max(-40,Math.min(r.w-40,e.clientX-grab.x));pos.y=Math.max(-10,Math.min(r.h-60,e.clientY-grab.y));ph.style.left=pos.x+'px';ph.style.top=pos.y+'px'};
+  ph.onpointerup=ph.onpointercancel=()=>{if(!grab)return;grab=null;ph.classList.remove('drag');const o=off(),d=Math.hypot(o.dx,o.dy);if(d<er*.22){step=2;size();draw();toast('카메라를 잘 맞췄어요. 스마트폰 화면을 크게 볼게요.','note')}else if(d<er*1.4)toast('조금만 더 가운데로 옮겨 보세요.','warn')};
+  // 03·04 ISO, SPEED
+  pIso.onclick=()=>{if(step<3||step>5)return;if(step===3&&auto){auto=false}cur='iso';snd('click');draw()};
+  pSpd.onclick=()=>{if(step<3||step>5)return;if(step===3){toast('먼저 <b>ISO</b>를 눌러 주세요.','warn');return}auto=false;cur='spd';snd('click');draw()};
+  rng.oninput=()=>{if(!cur)return;const v=+rng.value;if(cur==='iso'){iso=v;if(step===3&&iso===0){step=4;cur=null;toast('ISO를 50으로 내렸어요.','note')}}else{spd=v;const ok=spd>=5&&spd<=7;if(step===4&&ok){step=5;toast('달 표면이 잘 보여요.','note')}else if(step===5&&!ok)step=4}draw()};
+  // 05 찍기
+  shut.onclick=()=>{if(step!==5){toast('아직 찍을 수 없어요. 위쪽 안내를 따라 해 주세요.','warn');return}snd('shutter');const fl=ui.querySelector('.flash');fl.style.opacity=.9;setTimeout(()=>fl.style.opacity=0,120);
+    const r=SR(),pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=360;const x=o.getContext('2d');renderer.render(scene,camera);if('filter' in x)x.filter=`brightness(${bright()})`;const sz=er*2.06;x.drawImage(canvas,(r.w/2-sz/2)*pr,(r.h*CY-sz/2)*pr,sz*pr,sz*pr,0,0,360,360);
+    S.photo=o.toDataURL('image/jpeg',.86);save();step=6;cur=null;draw();side_();toast('찰칵! 달 사진을 일지에 붙였어요.')};
+  // 스마트폰 화면: 카메라가 맞은 만큼 달이 화면 가운데로 들어옴
+  frameHook=()=>{if(S.stage!=='actD')return;const r=SR();if(r.w<2)return;const cw=cv.clientWidth,ch=cv.clientHeight;if(cv.width!==cw||cv.height!==ch){cv.width=cw;cv.height=ch}const o=off(),pr=canvas.width/r.w,W=cv.width,H=cv.height;cx.fillStyle='#000';cx.fillRect(0,0,W,H);
+    if(Math.hypot(o.dx,o.dy)<er*1.5){const sz=er*2.06,d=Math.min(W,H)*.9,k=d/sz;cx.save();cx.beginPath();cx.arc(W/2-o.dx*k,H/2-o.dy*k,d/2,0,7);cx.clip();cx.drawImage(canvas,(r.w/2-sz/2)*pr,(r.h*CY-sz/2)*pr,sz*pr,sz*pr,W/2-o.dx*k-d/2,H/2-o.dy*k-d/2,d,d);cx.restore()}
+    cv.style.filter=`brightness(${step>=6?1:bright()})`};
+  if(step===6){auto=false;iso=0;spd=6}
+  size();draw();side_();const onRs=()=>{if(S.stage==='actD'&&$('#photoUI')){size();draw()}};addEventListener('resize',onRs)}
+
+/* 더 해 보기 B: 달 모형 빚기 — 민무늬 공을 누르고, 칠하고, 문질러 관찰한 달을 모형으로 나타냄(지도서 대체 활동 '달 모형 만들기') */
+const CLAY_SHOW=['충돌 구덩이','달의 바다','울퉁불퉁한 면'];
+function sActB(){V.sunMode='relief';V.free=true;V.minD=4.0;V.maxD=5.4;fly(20,10,4.6);allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
+  // 공의 겉면에 그리는 두 장의 그림: 색과 높낮이. 누른 자리의 UV에 붓 자국을 찍음
+  const CW=1024,CH=512,BASE='#b9bcc4',mk=()=>{const c=document.createElement('canvas');c.width=CW;c.height=CH;return c};
+  const cc=mk(),hc=mk(),cx=cc.getContext('2d'),hx=hc.getContext('2d');
+  const wipe=()=>{cx.fillStyle=BASE;cx.fillRect(0,0,CW,CH);hx.fillStyle='#808080';hx.fillRect(0,0,CW,CH)};wipe();
+  const ct=new THREE.CanvasTexture(cc),ht=new THREE.CanvasTexture(hc);if('colorSpace' in ct)ct.colorSpace=THREE.SRGBColorSpace;
+  const sc=new THREE.Scene();sc.background=new THREE.Color(0x05081a);
+  const ball=new THREE.Mesh(new THREE.SphereGeometry(1,96,48),new THREE.MeshStandardMaterial({map:ct,bumpMap:ht,bumpScale:14,roughness:1,metalness:0}));sc.add(ball);
+  const sl=new THREE.DirectionalLight(0xffffff,2.3);sc.add(sl);sc.add(new THREE.AmbientLight(0xffffff,.16));sc.userData.sun=sl;
+  duoScene=sc;duo=true;
+  let tool='press',n={press:0,paint:0,rub:0},stage=S.clay?4:1,shown=new Set(S.clay?S.clay.shown:[]);
+  const r0=SR(),wide=r0.w>=r0.h;
+  [['내 달 모형',wide?25:50,10],['망원경으로 본 달',wide?75:50,wide?10:r0.h/2+10]].forEach(d=>{const e=el('span','duo',d[0]);e.style.left=d[1]+'%';e.style.top=d[2]+'px';stageEl.append(e)});
+  const pad=el('div');pad.id='clayPad';pad.style.cssText=wide?'left:0;top:0;width:50%;height:100%':'left:0;top:0;width:100%;height:50%';stageEl.append(pad);
+  const bar=el('div');bar.id='clayBar';stageEl.append(bar);
+  const TOOLS=[['turn','돌리기'],['press','누르기'],['paint','칠하기'],['rub','문지르기'],['erase','지우기']];
+  const open=t=>t==='paint'?stage>=2:t==='rub'?stage>=3:true;
+  const drawBar=fresh_=>{bar.innerHTML=TOOLS.map(t=>`<button data-t="${t[0]}" data-q="1" class="${tool===t[0]?'on':''}${fresh_===t[0]?' new':''}" ${open(t[0])?'':'disabled'}>${t[1]}</button>`).join('');
+    bar.querySelectorAll('button').forEach(b=>b.onclick=()=>{tool=b.dataset.t;snd('click');drawBar();pad.classList.toggle('off',tool==='turn')});pad.classList.toggle('off',tool==='turn')};
+  // 누른 곳의 UV: 첫 칸(내 달 모형)의 화면 비율로 광선을 쏨
+  const rc=new THREE.Raycaster(),v2=new THREE.Vector2();
+  const uvAt=(x,y)=>{const r=SR(),w=r.w>=r.h,vw=w?r.w/2:r.w,vh=w?r.h:r.h/2;v2.set((x-r.x)/vw*2-1,-((y-r.y)/vh*2-1));camera.aspect=vw/vh;camera.updateProjectionMatrix();camera.updateMatrixWorld();rc.setFromCamera(v2,camera);const h=rc.intersectObject(ball)[0];camera.aspect=r.w/r.h;camera.updateProjectionMatrix();return h?h.uv:null};
+  // 붓 자국: 공 위에서 둥글게 보이도록 위도에 따라 가로로 늘이고, 이음매는 양쪽에 한 번씩 더 찍음
+  const stamp=(g,uv,fn)=>{const y=(1-uv.y)*CH,k=Math.min(4,1/Math.max(.25,Math.sin(uv.y*Math.PI)));for(const dx of[-CW,0,CW]){const x=uv.x*CW+dx;if(x<-120||x>CW+120)continue;g.save();g.translate(x,y);g.scale(k,1);fn(g);g.restore()}};
+  const crater=(uv,r)=>{stamp(hx,uv,g=>{const q=g.createRadialGradient(0,0,0,0,0,r*1.3);q.addColorStop(0,'#2c2c2c');q.addColorStop(.62,'#484848');q.addColorStop(.78,'#f4f4f4');q.addColorStop(.9,'#b0b0b0');q.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=q;g.beginPath();g.arc(0,0,r*1.3,0,7);g.fill()});
+    stamp(cx,uv,g=>{const q=g.createRadialGradient(0,0,0,0,0,r*1.3);q.addColorStop(0,'rgba(60,62,70,.42)');q.addColorStop(.66,'rgba(60,62,70,.3)');q.addColorStop(.8,'rgba(255,255,255,.4)');q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.beginPath();g.arc(0,0,r*1.3,0,7);g.fill()})};
+  const paint=uv=>stamp(cx,uv,g=>{const q=g.createRadialGradient(0,0,0,0,0,26);q.addColorStop(0,'rgba(58,60,70,.62)');q.addColorStop(.6,'rgba(58,60,70,.45)');q.addColorStop(1,'rgba(58,60,70,0)');g.fillStyle=q;g.beginPath();g.arc(0,0,26,0,7);g.fill()});
+  const rub=uv=>{stamp(hx,uv,g=>{for(let i=0;i<10;i++){const a=Math.random()*6.283,d=Math.random()*22,v=Math.random()<.5?60+Math.random()*40:160+Math.random()*60;g.fillStyle=`rgba(${v},${v},${v},.55)`;g.beginPath();g.arc(Math.cos(a)*d,Math.sin(a)*d,2+Math.random()*4,0,7);g.fill()}});
+    stamp(cx,uv,g=>{for(let i=0;i<5;i++){const a=Math.random()*6.283,d=Math.random()*22;g.fillStyle=Math.random()<.5?'rgba(255,255,255,.14)':'rgba(70,72,80,.14)';g.beginPath();g.arc(Math.cos(a)*d,Math.sin(a)*d,2+Math.random()*3,0,7);g.fill()}})};
+  const erase=uv=>{stamp(cx,uv,g=>{g.fillStyle=BASE;g.beginPath();g.arc(0,0,26,0,7);g.fill()});stamp(hx,uv,g=>{g.fillStyle='#808080';g.beginPath();g.arc(0,0,26,0,7);g.fill()})};
+  const upd=()=>{ct.needsUpdate=true;ht.needsUpdate=true};
+  const steps=()=>{if(stage===1)inst('01','<b>누르기</b>로 내 달 모형을 눌러 <b>충돌 구덩이</b>를 세 개 넘게 만들어 주세요. 길게 누르면 더 커져요.');
+    else if(stage===2)inst('02','<b>칠하기</b>가 열렸어요. 어두운 색으로 <b>달의 바다</b>를 칠해 주세요.');
+    else if(stage===3)inst('03','<b>문지르기</b>가 열렸어요. 표면을 문질러 <b>울퉁불퉁한 면</b>을 만들어 주세요.');
+    else if(!S.clay)inst('04','옆의 달과 견주어 보고, <b>내 달에 나타낸 것</b>을 골라 일지에 붙여 주세요.');
+    else inst('✓','내 달 모형을 일지에 붙였어요. 더 빚어도 좋아요.')};
+  const next_=()=>{if(stage===1&&n.press>=3){stage=2;tool='paint';drawBar('paint');toast('구덩이를 만들었어요. 이제 칠하기를 쓸 수 있어요.','note');steps();side_()}
+    else if(stage===2&&n.paint>=18){stage=3;tool='rub';drawBar('rub');toast('달의 바다를 칠했어요. 이제 문지르기를 쓸 수 있어요.','note');steps();side_()}
+    else if(stage===3&&n.rub>=18){stage=4;drawBar();toast('내 달 모형을 옆의 달과 견주어 보세요.','note');steps();side_()}};
+  // 누르기는 누르고 있는 동안 조금씩 커짐
+  let held=null,last=null;
+  pad.onpointerdown=e=>{pad.setPointerCapture(e.pointerId);const uv=uvAt(e.clientX,e.clientY);if(!uv)return;last=uv;
+    if(tool==='press'){let r=9;crater(uv,r);upd();snd('thud');n.press++;held=setInterval(()=>{if(r<24){r+=2.5;crater(uv,r);upd()}},130)}
+    else{({paint,rub,erase})[tool](uv);upd();if(n[tool]!=null)n[tool]++}};
+  pad.onpointermove=e=>{if(!pad.hasPointerCapture(e.pointerId)||tool==='press')return;const uv=uvAt(e.clientX,e.clientY);if(!uv)return;({paint,rub,erase})[tool](uv);upd();if(n[tool]!=null)n[tool]++;last=uv};
+  pad.onpointerup=pad.onpointercancel=()=>{clearInterval(held);held=null;next_()};
+  const side_=()=>{setSide(`<span class="eyebrow">더 해 보기</span><h2>달 모형을 빚어 볼까요?</h2>
+    <p>내가 관찰한 달의 특징을 민무늬 공에 나타내 보세요. <b>돌리기</b>를 고르면 두 달을 함께 돌릴 수 있어요.</p>
+    ${stage>=4?`<h3>내 달에 나타낸 것</h3><p class="note">나타낸 것을 모두 골라요.</p><div class="opts">${CLAY_SHOW.map((t,i)=>`<button class="opt${shown.has(i)?' ok':''}" data-c="${i}">${t}</button>`).join('')}</div>
+     <div class="row"><button class="btn${S.clay?' line':' pulse'}" id="claySave" ${shown.size?'':'disabled'}>${S.clay?'다시 붙이기':'일지에 붙이기'}</button></div>
+     ${S.clay?`<p class="fb"><b>기록됨</b> 친구가 빚은 달 모형과 견주어 봐요. 어떤 특징을 나타냈는지 소개해 봐요.</p>`:''}`:'<p class="note">구덩이를 만들면 칠하기가, 달의 바다를 칠하면 문지르기가 열려요.</p>'}`);
+    $$('#side [data-c]').forEach(b=>b.onclick=()=>{const i=+b.dataset.c;shown.has(i)?shown.delete(i):shown.add(i);const scr=side.scrollTop;side_();side.scrollTop=scr});
+    const sv=$('#claySave');if(sv)sv.onclick=()=>{const r=SR(),w=r.w>=r.h,vw=w?r.w/2:r.w,vh=w?r.h:r.h/2,sz=Math.min(vw,vh)*.98,pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=360;
+      o.getContext('2d').drawImage(canvas,(vw-sz)/2*pr,(vh-sz)/2*pr,sz*pr,sz*pr,0,0,360,360);S.clay={img:o.toDataURL('image/jpeg',.85),shown:[...shown].sort()};save();toast('내 달 모형을 일지에 붙였어요.');steps();side_();side.scrollTop=side.scrollHeight}};
+  drawBar();steps();side_();if(stage===1)hand(null)}
 
 /* 마무리 */
-function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');SPOTS.forEach(o=>{if(S.found[o.id])L.push(o.log)});if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.bDone)L.push("'충돌 구덩이'라고 부르는 까닭: "+esc(S.bTxt||'돌을 떨어뜨리자 부딪친 자리에 구덩이가 생겼다.'));
-  const d=new Date();return `<h3>달 관찰 일지 ${S.name?'· '+esc(S.name):''}</h3><small>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 4학년 2학기 과학 1. 밤하늘 관찰</small>${L.length?'<ul>'+L.map(t=>'<li>'+t+'</li>').join('')+'</ul>':'<p>아직 기록이 없어요.</p>'}${S.draw?`<div><img src="${S.draw}" alt="내가 그린 달 무늬"><br><small>달 무늬에서 본 모양: ${esc(S.drawName)}</small></div>`:''}`}
+function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');MISS.forEach(m=>{if(S.shots[m.id])L.push(m.log)});if(S.predSame)L.push('관찰한 달의 모습은 내 예상과 '+(S.predSame==='same'?'같았다.':'달랐다.'));if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.photo)L.push('스마트폰을 망원경에 대고 달 사진을 찍었다. (갤럭시: 더보기 → 프로, ISO 50, SPEED 1/350쯤)'+(S.photoFound.length?' 사진에서 찾은 것: '+S.photoFound.map(i=>SEEN[i]).join(', ')+'.':''));if(S.clay)L.push('달 모형을 빚어 '+(S.clay.shown.length?S.clay.shown.map(i=>CLAY_SHOW[i]).join(', ')+'을(를) 나타냈다.':'내가 관찰한 달을 나타냈다.'));
+  const d=new Date();return `<h3>달 관찰 일지 ${S.name?'· '+esc(S.name):''}</h3><small>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 4학년 2학기 과학 1. 밤하늘 관찰</small>${L.length?'<ul>'+L.map(t=>'<li>'+t+'</li>').join('')+'</ul>':'<p>아직 기록이 없어요.</p>'}${MISS.some(m=>S.shots[m.id]&&S.shots[m.id].img)?`<div class="jshots">${MISS.filter(m=>S.shots[m.id]&&S.shots[m.id].img).map(m=>`<figure><img src="${S.shots[m.id].img}" alt="">${m.term}</figure>`).join('')}</div>`:''}${S.clay&&S.clay.img?`<div><img src="${S.clay.img}" alt="내가 빚은 달 모형"><br><small>내가 빚은 달 모형</small></div>`:''}${S.photo?`<div><img src="${S.photo}" alt="내가 찍은 달 사진"><br><small>내가 찍은 달 사진</small></div>`:''}${S.draw?`<div><img src="${S.draw}" alt="내가 그린 달 무늬"><br><small>달 무늬에서 본 모양: ${esc(S.drawName)}</small></div>`:''}`}
 function endPop(){S.endSeen=true;save();pop(`<span class="cup">${ic('cup')}</span><h2>관찰 활동을 모두 마쳤어요!</h2><p>다음에 무엇을 해 볼까요?</p><div class="row" style="justify-content:center"><button class="btn line" id="endAgain">${ic('reset')}처음부터 다시 하기</button><button class="btn" id="endMore">${ic('moon')}더 해 보기</button></div>`,'center');snd('fanfare');
   $('#endAgain').onclick=()=>{closePop();S=fresh();save();go('intro',true)};$('#endMore').onclick=()=>{closePop();go('more')}}
 function sFinish(){$('#finish').classList.add('show');const f=$('#faces');f.innerHTML='';FACES.forEach(([k,t],i)=>{const row=el('div','erow',`<span class="tg">${k}</span><p>${t}</p>`);const g=el('div','faces');Object.keys(FACE_SVG).forEach(w=>{const b=el('button','face'+(S.faces[i]===w?' on':''),`<svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="18.5"/>${FACE_SVG[w]}</svg><span>${w}</span>`);b.setAttribute('aria-label',w);b.onclick=()=>{const was=Object.keys(S.faces).length;S.faces[i]=w;save();sFinish();if(was<3&&Object.keys(S.faces).length===3)setTimeout(endPop,350)};g.append(b)});row.append(g);f.append(row)});
