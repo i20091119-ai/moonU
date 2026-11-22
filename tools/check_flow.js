@@ -35,7 +35,11 @@ await p.locator('#farOpts .opt').nth(1).click();await p.waitForTimeout(250);awai
 await p.click('#spotNext');await shot('surface_all',600);
 await p.click('#bNext');await shot('wrap');
 for(const w of ['둥근 공','어두운 곳','울퉁불퉁한','충돌 구덩이','달의 바다']){if(w==='울퉁불퉁한'){await p.locator('#bank button',{hasText:'매끈매끈한'}).click();await shot('wrap_wrong',250)}await p.locator('#bank button',{hasText:w}).click();await p.waitForTimeout(150)}
-await shot('wrap_result',1200);await p.click('#resOk');await shot('wrap_done');
+await shot('wrap_pins',900);
+await p.locator('.tray img[data-p=m3]').click();await p.locator('.pin[data-s=m1]').click();await shot('wrap_pin_wrong',250);await p.locator('.pin[data-s=m3]').click();await p.waitForTimeout(300);
+{const im=await p.locator('.tray img[data-p=m1]').boundingBox(),sl=await p.locator('.pin[data-s=m1] .ph').boundingBox();await p.mouse.move(im.x+30,im.y+30);await p.mouse.down();await p.mouse.move(sl.x+sl.width/2,sl.y+sl.height/2,{steps:10});await p.mouse.up();await p.waitForTimeout(300)}
+await p.locator('.tray img[data-p=m2]').click();await p.locator('.pin[data-s=m2]').click();await shot('wrap_pinned',900);
+await p.locator('#sameN').scrollIntoViewIfNeeded();await p.click('#sameN');await shot('wrap_done',500);
 await p.click('#bNext');await shot('actA_example',2500);await p.click('#aGo');await shot('actA',600);
 r=await p.evaluate(()=>SR());await p.mouse.move(r.x+r.w/2-60,r.y+r.h/2-40);await p.mouse.down();await p.mouse.move(r.x+r.w/2+40,r.y+r.h/2-80,{steps:6});await p.mouse.move(r.x+r.w/2+60,r.y+r.h/2+50,{steps:6});await p.mouse.up();
 await p.fill('#aName','춤추는 고양이');await shot('actA_ready',400);

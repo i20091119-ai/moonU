@@ -96,6 +96,20 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 .slot.got{color:var(--ink);font-weight:700}.slot.got .ph{border:2px solid #fff;box-shadow:0 2px 0 var(--edge),0 4px 10px rgba(60,40,60,.14)}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cmp figure{margin:0;display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub);text-align:center}
 .cmp img{width:100%;aspect-ratio:1.6;object-fit:cover;border-radius:12px;display:block}
+/* 정리: 문장에 내가 찍은 사진 붙이기 */
+.pins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pin{display:flex;flex-direction:column;align-items:center;gap:5px;font-weight:700;text-align:center}
+.pin .ph{width:100%;aspect-ratio:1.35;border-radius:14px;border:2px dashed var(--ans);background:#fff center/cover no-repeat;display:grid;place-items:center;color:#9DBDF0;font-size:var(--fs-sub);font-weight:500;cursor:pointer}
+.pin.ok .ph{border:3px solid #fff;box-shadow:0 2px 0 var(--edge),0 6px 14px rgba(60,40,60,.16);cursor:default}
+.pin.no .ph{animation:shake .3s;border-color:var(--warn)}
+.tray{display:flex;gap:12px;flex-wrap:wrap;align-items:center;min-height:84px}
+.tray img{width:clamp(84px,11vw,120px);aspect-ratio:1;object-fit:cover;border-radius:12px;border:3px solid #fff;box-shadow:0 2px 0 var(--edge),0 6px 14px rgba(60,40,60,.16);cursor:grab;touch-action:none}
+.tray img.sel{outline:4px solid var(--pri);outline-offset:2px}
+.dragimg{position:fixed;z-index:95;width:110px;height:110px;object-fit:cover;border-radius:12px;border:3px solid #fff;box-shadow:0 10px 24px rgba(0,0,0,.35);pointer-events:none;transform:translate(-50%,-50%) rotate(-4deg)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs figure{margin:0;background:var(--soft2);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+.vs figure img{width:100%;max-height:22vh;object-fit:contain;border-radius:10px;background:#fff}
+.vs .tg{font-size:var(--fs-sub);font-weight:700;color:var(--pri)}
 /* 관찰 1: 망원경 시야(둥근 테두리), 초점 손잡이, 달 사진과 달 이름표 */
 #scope{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0,transparent calc(var(--er) - 1px),#8b8f9c var(--er),#3a3d47 calc(var(--er) + 9px),#07080d calc(var(--er) + 11px))}
 #scope::before,#scope::after{content:'';position:absolute;left:50%;top:50%;background:rgba(255,255,255,.55)}
@@ -361,6 +375,8 @@ body[data-mode=intro] #app{visibility:hidden}
         <div class="sent">달 표면의 어두운 곳을 <span class="blank" data-a="달의 바다"></span>라고 한다.</div>
       </div>
       <div class="bank" id="bank"></div>
+      <div id="pinBox" style="display:none;flex-direction:column;gap:10px"></div>
+      <div id="vsBox" style="display:none;flex-direction:column;gap:10px"></div>
       <div id="think" style="display:none;flex-direction:column;gap:10px">
         <span class="eyebrow">더 생각해요</span>
         <p><b>달의 바다에는 실제로 물이 없어요. 그런데 왜 '바다'라고 부를까요?</b></p>
@@ -443,7 +459,7 @@ const D2R=Math.PI/180;
 
 /* ---------- 상태 ---------- */
 const KEY='moon-obs-421-01';
-const fresh=()=>({stage:'intro',shots:{},photo:null,photoFound:[],max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',bDone:false,bTxt:'',faces:{},name:''});
+const fresh=()=>({stage:'intro',pins:{},predSame:null,shots:{},photo:null,photoFound:[],max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',bDone:false,bTxt:'',faces:{},name:''});
 let S=fresh();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){try{const c=JSON.parse(JSON.stringify(S));Object.values(c.shots||{}).forEach(x=>x.img=null);c.draw=c.photo=null;localStorage.setItem(KEY,JSON.stringify(c))}catch(e2){}}};
 const OLD2NEW={sea1:'m1',sea2:'m1',hi:'m2',cr1:'m3',cr2:'m3',far:'m4'};
@@ -729,7 +745,7 @@ function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0
     const f=fsz(),sc=scale();for(const k of CRATERS){if(angDist(c.lat,c.lon,k[0],k[1])<=hd*.95&&k[2]/1737.4*sc>=f*.08)return true}
     if(GRID.h&&hd<24){for(const dy of[-.3,0,.3])for(const dx of[-.3,0,.3]){const la=c.lat+dy*hd,lo=c.lon+dx*hd/Math.max(.3,Math.cos(la*D2R));const mid=gMean(GRID.h,la,lo,.5);for(const rr of[1.2,2,3.2]){if(rr>hd)continue;let ring=0;for(let i=0;i<12;i++){const t=i/12*6.2832;ring+=gAt(GRID.h,la+rr*Math.sin(t),lo+rr*Math.cos(t)/Math.max(.3,Math.cos(la*D2R)))}if(ring/12-mid>=9)return true}}}
     return false}
-  const snapshot=()=>{const r=SR(),f=fsz(),pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=320;renderer.render(scene,camera);o.getContext('2d').drawImage(canvas,(r.w-f)/2*pr,(r.h-f)/2*pr,f*pr,f*pr,0,0,320,320);return o.toDataURL('image/jpeg',.8)};
+  const snapshot=()=>{const r=SR(),f=fsz(),pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=320;const vs=sprites.filter(q=>q.visible);vs.forEach(q=>q.visible=false);renderer.render(scene,camera);vs.forEach(q=>q.visible=true);o.getContext('2d').drawImage(canvas,(r.w-f)/2*pr,(r.h-f)/2*pr,f*pr,f*pr,0,0,320,320);return o.toDataURL('image/jpeg',.8)};
   const nearPatch=sh=>{let best=null,bd=22;for(const o of SPOTS){if(!T.has(o.id))continue;const d=angDist(sh.lat,sh.lon,o.lat,o.lon);if(d<bd){bd=d;best=o}}return best};
   const slots=()=>`<div class="shots">${MISS.map((m,i)=>{const sh=S.shots[m.id],c=cur();return`<div class="slot${sh?' got':(c&&c.id===m.id?' now':'')}" data-m="${m.id}"><span class="ph" style="${sh&&sh.img?`background-image:url(${sh.img})`:''}">${sh?(sh.img?'':ic('check')):i+1}</span><span>${sh?m.term:m.name}</span></div>`}).join('')}</div>`;
   const startFind=()=>{mode='find';tmp=null;t0=performance.now();misses=0;level=0;showSpots([]);$('#flip').classList.remove('pulse');paint()};
@@ -776,17 +792,38 @@ function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0
   startFind()}
 
 function sWrap(){$('#wrap').classList.add('show');const blanks=$$('#wrap .blank');const words=['둥근 공','어두운 곳','울퉁불퉁한','충돌 구덩이','달의 바다','납작한 원','매끈매끈한','달의 호수'];
-  let cur=null;const bank=$('#bank');bank.innerHTML='';
-  const done=()=>{$('#think').style.display='flex';bank.style.display='none';$('#wrapHint').textContent='관찰한 내용을 잘 정리했어요.';allow(true,'창의 활동')};
-  const result=()=>{S.wrapSeen=true;save();pop(`<span class="eyebrow">관찰로 발견했어요</span><h2>달은 둥근 공 모양이고,<br>표면은 울퉁불퉁해요.</h2>
-    <div class="grid2"><div class="rc"><span class="tg">관찰하기 전 내 예상</span><p>${S.pred!=null?esc(PRED[S.pred][0]):'예상을 고르지 않았어요.'}</p></div>
-    <div class="rc"><span class="tg">망원경으로 관찰한 결과</span><p>달 표면에는 어두운 곳과 밝은 곳이 있고, 충돌 구덩이가 많았어요.</p></div></div>
-    <p class="note">내 예상과 관찰한 결과를 견주어 보세요.</p><div class="row" style="justify-content:flex-end"><button class="btn dark" id="resOk">알겠어요</button></div>`);$('#resOk').onclick=closePop};
-  const check=()=>{if(blanks.every(b=>b.textContent===b.dataset.a)){S.wrapOk=true;save();snd('ok');done();setTimeout(result,500)}};
+  let cur=null;const bank=$('#bank'),pinBox=$('#pinBox'),vsBox=$('#vsBox');bank.innerHTML='';
+  // 사진을 붙일 자리: 문장의 낱말 ← 그 임무에서 내가 찍은 사진
+  const PINS=[['m1','어두운 곳'],['m2','울퉁불퉁한 면'],['m3','충돌 구덩이']].filter(x=>S.shots[x[0]]&&S.shots[x[0]].img);
+  const pinsDone=()=>PINS.every(x=>S.pins[x[0]]);
+  const finish=()=>{$('#think').style.display='flex';allow(true,'창의 활동')};
+  // 맨 아래: 내 예상 카드와 내가 찍은 사진을 나란히
+  const versus=()=>{const sh=['m3','m2','m1'].map(k=>S.shots[k]).find(x=>x&&x.img);vsBox.style.display='flex';
+    vsBox.innerHTML=`<span class="eyebrow">예상과 견주기</span><p><b>내 예상과 같았나요?</b></p>
+     <div class="vs"><figure><span class="tg">관찰하기 전 내 예상</span>${S.pred!=null?`<img src="assets/${PRED[S.pred][1]}.png" alt=""><span>${esc(PRED[S.pred][0])}</span>`:'<span>예상을 고르지 않았어요.</span>'}</figure>
+     <figure><span class="tg">내가 찍은 달</span>${sh?`<img src="${sh.img}" alt="내가 찍은 달 사진">`:''}<span>달 표면에는 어두운 곳과 밝은 곳이 있고, 충돌 구덩이가 많았어요.</span></figure></div>
+     <div class="row"><button class="opt${S.predSame==='same'?' ok':''}" id="sameY" style="flex:1;text-align:center">같았어요</button><button class="opt${S.predSame==='diff'?' ok':''}" id="sameN" style="flex:1;text-align:center">달랐어요</button></div>`;
+    $('#sameY').onclick=()=>{S.predSame='same';save();snd('note');versus()};$('#sameN').onclick=()=>{S.predSame='diff';save();snd('note');versus()}};
+  // 사진 붙이기: 사진을 누른 뒤 자리를 누르거나, 끌어다 놓음
+  const pins=()=>{if(!PINS.length){versus();finish();return}pinBox.style.display='flex';let sel=null;
+    const left=PINS.filter(x=>!S.pins[x[0]]);
+    pinBox.innerHTML=`<span class="eyebrow">내가 찍은 사진 붙이기</span><p class="note" id="pinHint">${left.length?'사진을 누른 뒤 알맞은 자리를 누르거나, 사진을 끌어다 놓아 주세요.':'문장에 내 사진을 모두 붙였어요.'}</p>
+     <div class="pins">${PINS.map(x=>`<div class="pin${S.pins[x[0]]?' ok':''}" data-s="${x[0]}"><span class="ph" style="${S.pins[x[0]]?`background-image:url(${S.shots[x[0]].img})`:''}">${S.pins[x[0]]?'':'사진 자리'}</span><span>${x[1]}</span></div>`).join('')}</div>
+     <div class="tray">${left.slice().sort((a,b)=>a[1].length-b[1].length).map(x=>`<img src="${S.shots[x[0]].img}" data-p="${x[0]}" alt="내가 찍은 사진" draggable="false">`).join('')}</div>`;
+    const put=(pid,sid,slotEl)=>{if(pid===sid){S.pins[sid]=true;save();snd('ok');pins();if(pinsDone()){toast('문장에 내 사진을 모두 붙였어요.');versus();finish()}}else{slotEl.classList.add('no');setTimeout(()=>slotEl.classList.remove('no'),320);toast('사진을 다시 살펴보고 알맞은 자리를 찾아보세요.','warn')}};
+    pinBox.querySelectorAll('.pin:not(.ok)').forEach(e=>e.onclick=()=>{if(!sel){toast('먼저 사진을 눌러 주세요.','warn');return}put(sel,e.dataset.s,e)});
+    pinBox.querySelectorAll('.tray img').forEach(im=>{let g=null,mv=0;
+      im.onpointerdown=e=>{im.setPointerCapture(e.pointerId);mv=0;sel=im.dataset.p;pinBox.querySelectorAll('.tray img').forEach(x=>x.classList.toggle('sel',x===im))};
+      im.onpointermove=e=>{if(!im.hasPointerCapture(e.pointerId))return;mv+=Math.abs(e.movementX)+Math.abs(e.movementY);if(mv>10&&!g){g=el('img','dragimg');g.src=im.src;document.body.append(g)}if(g){g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'}};
+      im.onpointerup=im.onpointercancel=e=>{if(g){g.remove();g=null;const t=document.elementFromPoint(e.clientX,e.clientY),slot=t&&t.closest('.pin:not(.ok)');if(slot)put(im.dataset.p,slot.dataset.s,slot)}}});
+    if(pinsDone()){versus();finish()}};
+  const done=()=>{bank.style.display='none';$('#wrapHint').textContent='관찰한 내용을 잘 정리했어요.';pins()};
+  const check=()=>{if(blanks.every(b=>b.textContent===b.dataset.a)){S.wrapOk=true;save();toast('모두 맞았어요! 이제 내가 찍은 사진을 붙여 보세요.');done()}};
   const sel=b=>{blanks.forEach(x=>x.classList.remove('sel'));cur=b;if(b)b.classList.add('sel')};
   blanks.forEach(b=>{b.textContent=S.wrapOk?b.dataset.a:'';b.className='blank'+(S.wrapOk?' ok':'');b.onclick=()=>{if(b.classList.contains('ok'))return;sel(b)}});
   words.sort(()=>Math.random()-.5).forEach(w=>{const k=el('button','',w);k.onclick=()=>{if(!cur){toast('먼저 빈칸을 눌러 주세요.','warn');return}if(cur.dataset.a===w){cur.textContent=w;cur.classList.add('ok');cur.classList.remove('sel');k.classList.add('used');const nx=blanks.find(b=>!b.classList.contains('ok'));sel(nx||null);check()}else{k.style.animation='shake .3s';setTimeout(()=>k.style.animation='',300);toast('관찰한 내용을 떠올려 보세요.','warn')}};bank.append(k)});
-  if(S.wrapOk)done();else{bank.style.display='';$('#think').style.display='none';$('#wrapHint').textContent='빈칸을 누른 뒤, 아래에서 알맞은 낱말을 골라 주세요.';sel(blanks[0])}
+  pinBox.style.display='none';vsBox.style.display='none';$('#think').style.display='none';
+  if(S.wrapOk)done();else{bank.style.display='';$('#wrapHint').textContent='빈칸을 누른 뒤, 아래에서 알맞은 낱말을 골라 주세요.';sel(blanks[0])}
   const ta=$('#thinkTxt');ta.value=S.think;ta.oninput=()=>{S.think=ta.value;save()};$('#thinkEx').style.display='none';$('#bThinkEx').onclick=()=>$('#thinkEx').style.display=''}
 
 /* 창의 활동 A */
@@ -924,7 +961,7 @@ function sActB(){$('#actB').classList.add('show');allow(true,'더 해 보기로'
    dust=dust.filter(d=>d.l>0);dust.forEach(d=>{d.x+=d.vx*f;d.y+=d.vy*f;d.vy+=.18*f;d.l-=.02*f;x.globalAlpha=Math.max(0,d.l);x.fillStyle='#d9dbe2';x.beginPath();x.arc(d.x,d.y,3,0,7);x.fill()});x.globalAlpha=1}}
 
 /* 마무리 */
-function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');MISS.forEach(m=>{if(S.shots[m.id])L.push(m.log)});if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.photo)L.push('스마트폰을 망원경에 대고 달 사진을 찍었다. (갤럭시: 더보기 → 프로, ISO 50, SPEED 1/350쯤)'+(S.photoFound.length?' 사진에서 찾은 것: '+S.photoFound.map(i=>SEEN[i]).join(', ')+'.':''));if(S.bDone)L.push("'충돌 구덩이'라고 부르는 까닭: "+esc(S.bTxt||'돌을 떨어뜨리자 부딪친 자리에 구덩이가 생겼다.'));
+function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');MISS.forEach(m=>{if(S.shots[m.id])L.push(m.log)});if(S.predSame)L.push('관찰한 달의 모습은 내 예상과 '+(S.predSame==='same'?'같았다.':'달랐다.'));if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.photo)L.push('스마트폰을 망원경에 대고 달 사진을 찍었다. (갤럭시: 더보기 → 프로, ISO 50, SPEED 1/350쯤)'+(S.photoFound.length?' 사진에서 찾은 것: '+S.photoFound.map(i=>SEEN[i]).join(', ')+'.':''));if(S.bDone)L.push("'충돌 구덩이'라고 부르는 까닭: "+esc(S.bTxt||'돌을 떨어뜨리자 부딪친 자리에 구덩이가 생겼다.'));
   const d=new Date();return `<h3>달 관찰 일지 ${S.name?'· '+esc(S.name):''}</h3><small>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 4학년 2학기 과학 1. 밤하늘 관찰</small>${L.length?'<ul>'+L.map(t=>'<li>'+t+'</li>').join('')+'</ul>':'<p>아직 기록이 없어요.</p>'}${MISS.some(m=>S.shots[m.id]&&S.shots[m.id].img)?`<div class="jshots">${MISS.filter(m=>S.shots[m.id]&&S.shots[m.id].img).map(m=>`<figure><img src="${S.shots[m.id].img}" alt="">${m.term}</figure>`).join('')}</div>`:''}${S.photo?`<div><img src="${S.photo}" alt="내가 찍은 달 사진"><br><small>내가 찍은 달 사진</small></div>`:''}${S.draw?`<div><img src="${S.draw}" alt="내가 그린 달 무늬"><br><small>달 무늬에서 본 모양: ${esc(S.drawName)}</small></div>`:''}`}
 function endPop(){S.endSeen=true;save();pop(`<span class="cup">${ic('cup')}</span><h2>관찰 활동을 모두 마쳤어요!</h2><p>다음에 무엇을 해 볼까요?</p><div class="row" style="justify-content:center"><button class="btn line" id="endAgain">${ic('reset')}처음부터 다시 하기</button><button class="btn" id="endMore">${ic('moon')}더 해 보기</button></div>`,'center');snd('fanfare');
   $('#endAgain').onclick=()=>{closePop();S=fresh();save();go('intro',true)};$('#endMore').onclick=()=>{closePop();go('more')}}
