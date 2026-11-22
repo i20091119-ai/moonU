@@ -48,11 +48,13 @@
 ## 파일
 - `index.html` — 전체 앱. 화면 틀은 동아 샘플의 가상실험실을 따름(머리 / 차례 띠 / 안내 띠 + 무대 `#stage` / 옆 기록 `#side` / 이전·다음). 3D는 무대 칸 안에만 그림. 안내는 `inst(번호, 문장)`, 알림은 `toast(문장, 'warn')`. 단계 함수: `sIntro sPredict sShape sSurface sWrap sActA sMore sActC sActB sFinish`, 전환은 `go(stage)`, 상태는 `S`
 - `assets/moon_tex.js` — NASA CGI Moon Kit 색 지도(4096×2048)·높이 지도(2048×1024). 다시 만들기: `tools/build_textures.py`
+- `assets/moon_normal.js` — 달 전체 모형의 음영용 법선 지도(4096×2048, NASA 64픽셀/도 높이 자료에서 계산). 모든 기기에서 씀. `assets/moon_color8k.js` — 8K 색 지도. 큰 텍스처를 쓸 수 있는 기기(최대 텍스처 8192 이상, 메모리 4GB 이상)에서만 첫 화면 뒤에 불러와 바꿔 끼움(`loadHQ()`). 다시 만들기: `tools/build_textures_hq.py`
 - `assets/moon_terrain.js` — 관찰 지점 6곳의 지형 조각(높이 512×512 16비트, 색 768×768). 관찰 2에서 정답 뒤 [표면 가까이 내려가 보기]로 들어가는 3D 장면(`T` 모듈)에 씀. 높낮이 2배 과장, 음영·그림자는 실행 때 그림에 구워 넣음. 다시 만들기: `tools/build_terrain.py`(원본 약 1GB 내려받음)
 - `assets/spot_*.jpg` — 관찰 2 질문 칸의 사진 가운데 교과서 사진이 없는 세 곳(달의 바다 2, 충돌 구덩이 1). NASA 색 지도에서 만듦. 다시 만들기: `tools/build_spot_photos.py`. **관찰 지점은 모두 사진이 있어야 함**
 - `assets/tb_*.jpg`, `video/help.mp4` — 동아 교과서·지도서 그림과 도움 영상
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png` — ChatGPT 그림 도구로 제작
 - `fonts/` — 잘난체(제목), G마켓 산스(본문). 동아 샘플과 같은 글꼴
+- `assets/pred_*.png` — 예상 선택지의 그림(아이의 생각 풍선 안에 그 예상의 달). `PRED`가 `[문장, 그림]`
 - `assets/ic_*.png`, `prep_tablet.png` — ChatGPT 그림 도구로 제작한 3D 점토풍 아이콘(인트로·머리 단추)과 준비물 그림. 요청 문장은 `docs/그림_요청서.md`
 - 디버그: 브라우저 콘솔에서 `__moon.go('surface')`처럼 단계 이동
 
