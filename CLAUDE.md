@@ -28,6 +28,12 @@
 - 그림은 부품을 먼저 따로 만든 뒤 코딩에 쓰는 쪽이 품질이 좋다는 의견
 - 동아가 확정한 실험 차시 샘플의 방향: 정선됨, 학생이 할 부분과 순서가 구분됨
 
+## 톤앤매너 (동아 확정 샘플 기준, 2026-11-22 적용)
+- 색·글꼴·문체 기준과 샘플과 다르게 둔 점: `docs/톤앤매너_분석.md`
+- **개발 도움 자료: `docs/템플릿_개발안내.md`**(화면 틀, 부품 목록과 샘플 대응표, 색·문구 규칙, 새 단계 넣는 순서, 다른 차시로 옮기는 법). 부품을 더하거나 바꾸면 이 문서의 표와 '바뀐 기록'을 같이 고칠 것. 새 샘플을 받으면 8번 절차대로 분석해 반영
+- 단원 색은 `--pri` 변수. 지금은 샘플의 자주색(#BC499B)
+- 지시문은 "~해 주세요/~해 보세요", 핵심어만 `<b>`. 한 번에 한 가지만 안내
+
 ## 기술 제약
 - **`index.html`을 더블클릭(file://)해도 동작해야 함.** 그래서
   - ES 모듈 import 금지 → three.js는 일반 스크립트판 `lib/three.min.js`(r160, 일반 스크립트판의 마지막 버전)
@@ -38,15 +44,18 @@
 - 진행 상태는 localStorage(`moon-obs-421-01`)에 저장. try/catch 유지
 
 ## 파일
-- `index.html` — 전체 앱. 단계 함수: `sIntro sPredict sShape sSurface sWrap sActA sMore sActC sActB sFinish`, 전환은 `go(stage)`, 상태는 `S`
+- `index.html` — 전체 앱. 화면 틀은 동아 샘플의 가상실험실을 따름(머리 / 차례 띠 / 안내 띠 + 무대 `#stage` / 옆 기록 `#side` / 이전·다음). 3D는 무대 칸 안에만 그림. 안내는 `inst(번호, 문장)`, 알림은 `toast(문장, 'warn')`. 단계 함수: `sIntro sPredict sShape sSurface sWrap sActA sMore sActC sActB sFinish`, 전환은 `go(stage)`, 상태는 `S`
 - `assets/moon_tex.js` — NASA CGI Moon Kit 색 지도(4096×2048)·높이 지도(2048×1024). 다시 만들기: `tools/build_textures.py`
+- `assets/moon_terrain.js` — 관찰 지점 6곳의 지형 조각(높이 512×512 16비트, 색 768×768). 관찰 2에서 정답 뒤 [표면 가까이 내려가 보기]로 들어가는 3D 장면(`T` 모듈)에 씀. 높낮이 2배 과장, 음영·그림자는 실행 때 그림에 구워 넣음. 다시 만들기: `tools/build_terrain.py`(원본 약 1GB 내려받음)
 - `assets/tb_*.jpg`, `video/help.mp4` — 동아 교과서·지도서 그림과 도움 영상
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png` — ChatGPT 그림 도구로 제작
-- `fonts/` — Jua(제목), Gowun Dodum(본문)
+- `fonts/` — 잘난체(제목), G마켓 산스(본문). 동아 샘플과 같은 글꼴
+- `assets/ic_*.png`, `prep_tablet.png` — ChatGPT 그림 도구로 제작한 3D 점토풍 아이콘(인트로·머리 단추)과 준비물 그림. 요청 문장은 `docs/그림_요청서.md`
 - 디버그: 브라우저 콘솔에서 `__moon.go('surface')`처럼 단계 이동
 
 ## 확인 방법
 - `index.html`을 크롬에서 직접 열어 인트로부터 마무리까지 진행
+- 자동 확인: `node tools/check_flow.js <캡처 폴더> [너비 높이]` — 전 단계를 눌러 가며 캡처하고 콘솔 오류를 모음. 1280×800, 1024×768, 760×1000 세 크기로 돌리고 캡처를 눈으로 볼 것. 단계를 더하면 이 스크립트도 고칠 것
 - 로컬 서버가 필요하면 `python -m http.server 8000`
 - 고친 뒤에는 반드시 실제 화면으로 확인하고, 터치(끌기·두 손가락 확대)도 볼 것
 - v0.1은 가상 브라우저(소프트웨어 렌더링)에서만 전 단계를 확인함. 실제 PC·태블릿 터치, 영상 재생, 인쇄, 이어서 하기는 미확인
