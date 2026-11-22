@@ -48,9 +48,16 @@ await p.click('#bNext');await shot('more');
 await p.click('#pickC');await shot('actC',2500);
 await p.locator('#side [data-s]').nth(2).click();await p.waitForTimeout(1500);await p.locator('#side [data-w]').nth(2).click();await shot('actC_why',400);
 await p.click('#cGo');await shot('actC_land',2600);
-await p.click('#bNext');await p.click('#pickB');await shot('actB');
-const ib=await p.locator('#impact').boundingBox();for(const fx of [.25,.5,.75]){await p.mouse.click(ib.x+ib.width*fx,ib.y+30);await p.waitForTimeout(1500)}
-await shot('actB_done');
+await p.click('#bNext');await p.click('#pickB');await shot('actB',2500);
+{const pb=await p.locator('#clayPad').boundingBox(),cx0=pb.x+pb.width/2,cy0=pb.y+pb.height/2,R0=Math.min(pb.width,pb.height)*.26;
+ // 누르기 네 번(한 번은 길게)
+ for(const [dx,dy,ms] of [[-.5,-.4,80],[.5,-.2,80],[0,.5,700],[-.2,.1,80]]){await p.mouse.move(cx0+dx*R0,cy0+dy*R0);await p.mouse.down();await p.waitForTimeout(ms);await p.mouse.up();await p.waitForTimeout(120)}
+ await shot('actB_craters',500);
+ const stroke=async(x0,y0,x1,y1)=>{await p.mouse.move(cx0+x0*R0,cy0+y0*R0);await p.mouse.down();await p.mouse.move(cx0+x1*R0,cy0+y1*R0,{steps:24});await p.mouse.up();await p.waitForTimeout(150)};
+ await stroke(-.8,-.1,.2,-.6);await stroke(-.6,.1,.4,-.3);await shot('actB_paint',500);
+ await stroke(-.7,.6,.7,.7);await stroke(-.5,.8,.6,.4);await shot('actB_rub',500);
+ await p.locator('#clayBar [data-t=turn]').click();await p.mouse.move(cx0,cy0);await p.mouse.down();await p.mouse.move(cx0+90,cy0+10,{steps:8});await p.mouse.up();
+ await p.locator('#side [data-c]').nth(0).click();await p.locator('#side [data-c]').nth(1).click();await p.click('#claySave');await shot('actB_done',700)}
 await p.click('#bNext');await p.click('#pickD');await shot('actD',2500);
 {const sr=await p.evaluate(()=>SR());const cam=await p.locator('.phone .cam').boundingBox();const from={x:cam.x+17,y:cam.y+60},to={x:sr.x+sr.w/2,y:sr.y+sr.h*.36+43};
  await p.mouse.move(from.x,from.y);await p.mouse.down();await p.mouse.move(to.x,to.y,{steps:12});await p.mouse.up();await shot('actD_aligned',700);
