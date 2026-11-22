@@ -30,7 +30,7 @@ const measure=()=>p.evaluate(([BOXES,ROWS,LIMIT])=>{
 let total=0;const run=async label=>{await p.waitForTimeout(700);const r=await measure();total+=r.length;console.log(`[${label}] ${r.length?'':'문제 없음'}`);r.forEach(x=>console.log('  '+x))};
 await run('인트로');
 await p.evaluate(()=>{const s=__moon.S();Object.assign(s,{pred:1,max:6,shape:{dragged:true,ok:true},found:{sea1:1,sea2:1,cr1:1,cr2:1,hi:1},wrapOk:false,draw:null,site:'다',siteWhy:[2]})});
-for(const st of ['predict','shape','surface','wrap','actA','more','actC','actB','finish']){await p.evaluate(s=>{__moon.go(s);toast('알림 문장이에요.')},st);await run(st)}
+for(const st of ['predict','shape','surface','wrap','actA','more','actC','actB','actD','finish']){await p.evaluate(s=>{__moon.go(s);toast('알림 문장이에요.')},st);await run(st)}
 await p.evaluate(()=>{__moon.go('surface')});await p.waitForTimeout(600);
 await p.evaluate(()=>document.querySelector('#bPrep').click());await run('준비물 팝업');
 console.log(total?`벗어난 곳 ${total}개`:'모두 통과');await b.close()})();

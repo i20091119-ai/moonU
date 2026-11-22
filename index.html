@@ -123,7 +123,7 @@ textarea{min-height:76px;resize:none}
 .bank button{min-height:46px;background:#fff;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:0 18px;font-size:var(--fs-body);font-weight:700}
 .bank button:hover{border-color:var(--pri)}
 .bank button.used{opacity:.3;pointer-events:none}
-.pick{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .pick button{background:var(--soft2);border:1.5px solid var(--line);border-radius:20px;padding:20px;text-align:left;font-size:var(--fs-body);font-weight:500;color:var(--ink);line-height:1.55}
 .pick button small{display:block;font-weight:700;color:var(--pri);font-size:var(--fs-sub)}
 .pick button b{display:block;font-family:var(--fd);font-weight:400;font-size:clamp(19px,1.6vw,26px);margin:2px 0 6px}
@@ -166,6 +166,45 @@ textarea{min-height:76px;resize:none}
 .rc .tg{font-size:var(--fs-sub);font-weight:700;color:var(--pri)}
 .cup{align-self:center;width:76px;height:76px;border-radius:50%;background:var(--soft);color:var(--pri);display:grid;place-items:center}.cup svg{width:38px;height:38px}
 #pop .box.center{text-align:center;align-items:center}#pop .box.center h2{padding:0}
+/* 더 해 보기 D: 달 사진 찍기. 스마트폰 화면은 갤럭시 기본 카메라의 프로 모드 배치를 본뜸 */
+#photoUI{position:absolute;inset:0;z-index:2;touch-action:none;overflow:hidden}
+#photoUI .mask{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% var(--cy),transparent 0,transparent calc(var(--er) - 1px),#8b8f9c var(--er),#3a3d47 calc(var(--er) + 9px),#07080d calc(var(--er) + 11px))}
+#photoUI .lbl{position:absolute;left:50%;top:max(4px,calc(var(--cy) - var(--er) - 34px));transform:translateX(-50%);color:#c9cbd6;font-size:var(--fs-sub);white-space:nowrap;pointer-events:none}
+.phone{position:absolute;width:var(--pw);height:var(--ph);border-radius:1.6em;background:#0b0c10;border:3px solid #4a4e5a;box-shadow:0 14px 30px rgba(0,0,0,.6);cursor:grab;touch-action:none;color:#fff;font-size:calc(var(--ph)/34);transition:left .45s,top .45s,width .45s,height .45s,font-size .45s}
+.phone.drag{transition:none}
+.phone.hint{animation:phhint 1.4s ease-in-out infinite}
+.phone.big{cursor:default}
+.phone .cam{position:absolute;left:50%;top:9px;width:34px;height:34px;margin-left:-17px;border-radius:50%;border:3px dashed var(--key);box-shadow:0 0 0 3px rgba(0,0,0,.4)}
+.phone .cam::after{content:'카메라';position:absolute;left:42px;top:5px;color:var(--key);font-size:12px;font-weight:700;white-space:nowrap}
+.phone.big .cam{display:none}
+.phone canvas{position:absolute;left:4%;top:52px;width:92%;height:calc(100% - 70px);border-radius:.6em;background:#000;transition:filter .3s}
+.phone.big{font-size:clamp(12px,calc(var(--ph)/15),20px);border-radius:1.2em}
+.phone.big canvas{left:1.2%;top:4%;height:92%;width:calc(var(--ph)*.92)}
+.pui{position:absolute;left:calc(var(--ph)*.92 + 2.4%);right:1.5%;top:0;bottom:0;display:none;flex-direction:column;align-items:center;justify-content:space-evenly;padding:2% 0}
+.phone.big .pui{display:flex}
+.prow{width:100%;display:none;justify-content:space-between}
+.phone.pro .prow{display:flex}
+.prow button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1em;padding:.3em 0;border-radius:.6em;color:#fff;font-size:.82em;line-height:1.2}
+.prow button small{font-size:.9em;opacity:.8;letter-spacing:.04em}
+.prow button b{font-weight:700}
+.prow button.on{color:var(--key)}
+.prow button.tgt,.pmode button.tgt{box-shadow:0 0 0 2px var(--key);animation:tgt 1.1s ease-in-out infinite}
+.prow button[disabled]{opacity:.45}
+.pslide{width:100%;height:2.4em;display:flex;align-items:center;gap:.6em;visibility:hidden}
+.pslide.on{visibility:visible}
+.pslide b{min-width:4.6em;text-align:center;color:var(--key);font-size:.95em}
+.pslide input{flex:1;accent-color:#FFE08A;height:2em;touch-action:pan-x}
+.pmode{display:flex;gap:.3em;justify-content:center;flex-wrap:nowrap}
+.pmode button{padding:.35em .8em;border-radius:999px;color:#cfd2da;font-size:.85em;white-space:nowrap}
+.pmode button.on{background:#2b2e37;color:#fff;font-weight:700}
+.phone .shut{width:3.4em;height:3.4em;border-radius:50%;background:#fff;border:.3em solid #6f7480;opacity:.45}
+.phone .shut.on{opacity:1;animation:halo 1.4s ease-in-out infinite}
+#photoUI .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
+.shotimg{width:100%;max-width:240px;border-radius:14px;border:4px solid #fff;box-shadow:0 3px 0 var(--edge),0 8px 18px rgba(60,40,60,.16);transform:rotate(-2deg);align-self:center}
+.howto{margin:0;padding:12px 14px 12px 34px;line-height:1.7;background:var(--soft2);border-radius:14px}
+.howto b{color:var(--pri)}
+@keyframes phhint{0%,100%{transform:translate(0,0)}50%{transform:translate(-10px,-10px)}}
+@keyframes tgt{50%{box-shadow:0 0 0 5px rgba(255,224,138,.35)}}
 /* 아래 이전·다음 */
 #nav{display:flex;align-items:center;justify-content:space-between;padding:clamp(8px,1.4vh,14px) var(--pad) clamp(12px,2vh,18px);flex:none}
 #nav .btn{min-width:132px}
@@ -310,6 +349,7 @@ body[data-mode=intro] #app{visibility:hidden}
       <div class="pick">
         <button id="pickC"><small>활동 1</small><b>달 착륙 지점 고르기</b>내가 관찰한 달 표면 가운데 탐사선이 내릴 곳을 고르고 까닭을 써요.</button>
         <button id="pickB"><small>활동 2</small><b>구덩이 만들기</b>달 표면 모형에 돌을 떨어뜨려 보고, '충돌 구덩이'라는 이름을 생각해 봐요.</button>
+        <button id="pickD"><small>활동 3</small><b>달 사진 찍기</b>스마트폰을 망원경에 대고 달 표면을 사진으로 찍는 방법을 차례대로 해 봐요.</button>
       </div>
     </div></section>
 
@@ -374,7 +414,7 @@ const D2R=Math.PI/180;
 
 /* ---------- 상태 ---------- */
 const KEY='moon-obs-421-01';
-const fresh=()=>({stage:'intro',max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},found:{},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',bDone:false,bTxt:'',faces:{},name:''});
+const fresh=()=>({stage:'intro',photo:null,photoFound:[],max:0,wrapSeen:false,endSeen:false,pred:null,shape:{dragged:false,ok:false},found:{},wrapOk:false,think:'',draw:null,drawName:'',site:null,siteWhy:[],siteTxt:'',bDone:false,bTxt:'',faces:{},name:''});
 let S=fresh();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const load=()=>{try{const t=localStorage.getItem(KEY);return t?Object.assign(fresh(),JSON.parse(t)):null}catch(e){return null}};
@@ -407,14 +447,14 @@ const WHY=['매끈해 보여서 내리기 쉬울 것 같아요.','충돌 구덩�
 const FACES=[['지식·이해','달의 모양과 표면 모습을 알게 되었어요.'],['과정·기능','달의 모양과 표면 모습을 조사했어요.'],['가치·태도','달에서 볼 수 있는 다양한 모습에 흥미를 가지게 되었어요.']];
 const FACE_SVG={'최고야':'<path d="M13 17q3-3 6 0M23 17q3-3 6 0"/><path d="M13 24q8 9 16 0z" style="fill:currentColor;opacity:.25"/><path d="M13 24q8 9 16 0"/>','잘했어':'<path d="M15.5 16v2M26.500 16v2"/><path d="M14 24q7 6 14 0"/>','힘내자':'<path d="M15.5 16v2M26.500 16v2"/><path d="M15 25q6 2.500 12 0"/>'};
 const STAGES=['intro','predict','shape','surface','wrap','actA','more','finish'];
-const MODE={intro:'intro',predict:'panel',shape:'stage',surface:'stage',wrap:'panel',actA:'stage',more:'panel',actC:'stage',actB:'panel',finish:'panel'};
+const MODE={intro:'intro',predict:'panel',shape:'stage',surface:'stage',wrap:'panel',actA:'stage',more:'panel',actC:'stage',actB:'panel',actD:'stage',finish:'panel'};
 const TABS=[['predict','예상','달의 모습'],['shape','관찰 1','달의 모양'],['surface','관찰 2','달의 표면'],['wrap','정리','관찰 내용'],['actA','창의 활동','달 무늬'],['more','더 해 보기','고르기'],['finish','마무리','스스로 평가']];
 $('#tabs').innerHTML=TABS.map(t=>`<button class="tab" data-s="${t[0]}"><small>${t[1]}</small><b>${t[2]}</b></button>`).join('');
 
 /* ---------- 효과음 (Web Audio로 직접 만든 소리, 외부 파일 없음) ---------- */
 const SND={on:true,ctx:null};try{SND.on=localStorage.getItem(KEY+':snd')!=='off'}catch(e){}
 function tn(f0,dur,type,vol,delay,f1){if(!SND.on)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!SND.ctx)SND.ctx=new C();const c=SND.ctx;if(c.state==='suspended')c.resume();const t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.1,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.03)}catch(e){}}
-const SFX={click:()=>tn(1150,.07,'sine',.07,0,820),page:()=>{tn(520,.09,'sine',.05,0,700);tn(880,.1,'sine',.04,.06)},ok:()=>{tn(784,.14,'sine',.12);tn(1047,.18,'sine',.11,.09);tn(1319,.3,'sine',.09,.18)},note:()=>tn(760,.11,'triangle',.09,0,1260),wrong:()=>{tn(240,.14,'square',.045,0,180);tn(200,.18,'square',.045,.12,140)},popup:()=>{tn(660,.1,'sine',.08,0,880);tn(990,.12,'sine',.05,.07)},check:()=>tn(760,.11,'triangle',.1,0,1260),down:()=>tn(520,.5,'sine',.08,0,150),thud:()=>{tn(150,.22,'sine',.16,0,60);tn(90,.3,'triangle',.1,.02,50)},fanfare:()=>{[523,659,784,1047].forEach((f,i)=>tn(f,.22,'triangle',.1,i*.11));tn(1047,.6,'sine',.06,.46)}};
+const SFX={click:()=>tn(1150,.07,'sine',.07,0,820),page:()=>{tn(520,.09,'sine',.05,0,700);tn(880,.1,'sine',.04,.06)},ok:()=>{tn(784,.14,'sine',.12);tn(1047,.18,'sine',.11,.09);tn(1319,.3,'sine',.09,.18)},note:()=>tn(760,.11,'triangle',.09,0,1260),wrong:()=>{tn(240,.14,'square',.045,0,180);tn(200,.18,'square',.045,.12,140)},popup:()=>{tn(660,.1,'sine',.08,0,880);tn(990,.12,'sine',.05,.07)},check:()=>tn(760,.11,'triangle',.1,0,1260),down:()=>tn(520,.5,'sine',.08,0,150),shutter:()=>{tn(2400,.03,'square',.06);tn(1200,.05,'square',.05,.05)},thud:()=>{tn(150,.22,'sine',.16,0,60);tn(90,.3,'triangle',.1,.02,50)},fanfare:()=>{[523,659,784,1047].forEach((f,i)=>tn(f,.22,'triangle',.1,i*.11));tn(1047,.6,'sine',.06,.46)}};
 const snd=n=>{if(SFX[n])SFX[n]()};
 const sndBtn=()=>{const b=$('#bSnd');b.classList.toggle('off',!SND.on);b.innerHTML=ic(SND.on?'snd':'mute')};
 $('#bSnd').onclick=()=>{SND.on=!SND.on;try{localStorage.setItem(KEY+':snd',SND.on?'on':'off')}catch(e){}sndBtn();snd('check')};sndBtn();
@@ -444,7 +484,7 @@ $('#bPrep').onclick=showPrep;$('#bVideo').onclick=showVideo;$('#bVideo2').onclic
 $('#bJournal').onclick=()=>pop('<span class="eyebrow">관찰 기록</span><h2>관찰 일지</h2><div id="journal">'+journalHTML()+'</div>');
 $('#bHomeTop').onclick=()=>{save();go('intro',true)};
 $$('.tab').forEach((t,i)=>t.onclick=()=>{if(i<=(S.max||0)){if(TABS[i][0]!==S.stage)go(TABS[i][0])}else toast('앞의 활동을 먼저 해 주세요.','warn')});
-$('#reset').onclick=()=>{const s=S.stage;if(s==='shape')S.shape={dragged:false,ok:false};else if(s==='surface')S.found={};else if(s==='actA'){S.draw=null;S.drawName=''}else if(s==='actC'){S.site=null;S.siteWhy=[];S.siteTxt=''}save();go(s);toast('이 활동을 처음부터 다시 해요.','note')};
+$('#reset').onclick=()=>{const s=S.stage;if(s==='shape')S.shape={dragged:false,ok:false};else if(s==='surface')S.found={};else if(s==='actA'){S.draw=null;S.drawName=''}else if(s==='actC'){S.site=null;S.siteWhy=[];S.siteTxt=''}else if(s==='actD'){S.photo=null;S.photoFound=[]}save();go(s);toast('이 활동을 처음부터 다시 해요.','note')};
 addEventListener('keydown',e=>{if(MODE[S.stage]==='intro'||$('#pop').classList.contains('show')||/INPUT|TEXTAREA|VIDEO/.test(e.target.tagName||''))return;if(e.key==='ArrowRight'&&!nextBtn.disabled&&nextBtn.style.display!=='none')nextBtn.click();else if(e.key==='ArrowLeft')prevBtn.click()});
 const nextBtn=$('#bNext'),prevBtn=$('#bPrev');
 const allow=(on,label)=>{nextBtn.disabled=!on;nextBtn.classList.toggle('pulse',!!on);if(label)$('#nextT').textContent=label};
@@ -565,15 +605,15 @@ const side=$('#side');
 const setSide=html=>{side.innerHTML=html||'';side.scrollTop=0};
 function go(stage,keep){S.stage=stage;if(!keep)save();
   $$('.full').forEach(f=>f.classList.remove('show'));$('#draw').classList.remove('show');$('#draw').style.pointerEvents='';$('#lander').style.display='none';
-  T.off();chip(false);hand(null);frameHook=null;askId=null;onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';$('#flip').classList.remove('pulse');setSide('');inst('01','');
+  T.off();chip(false);hand(null);frameHook=null;askId=null;{const u=$('#photoUI');if(u){u.remove();camera.clearViewOffset();camera.updateProjectionMatrix()}}onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';$('#flip').classList.remove('pulse');setSide('');inst('01','');
   document.body.dataset.mode=MODE[stage];
   $('#viewChip').classList.remove('show');if(stage!=='intro')snd('page');
-  const ti=TABS.findIndex(t=>t[0]===(stage==='actC'||stage==='actB'?'more':stage));if(ti>(S.max||0)){S.max=ti;if(!keep)save()}$$('.tab').forEach((t,i)=>{t.classList.toggle('on',i===ti);t.classList.toggle('done',i<ti)});
+  const ti=TABS.findIndex(t=>t[0]===(/^act[CBD]$/.test(stage)?'more':stage));if(ti>(S.max||0)){S.max=ti;if(!keep)save()}$$('.tab').forEach((t,i)=>{t.classList.toggle('on',i===ti);t.classList.toggle('done',i<ti)});
   nextBtn.style.display=(stage==='finish')?'none':'';$('#nextT').textContent='다음';allow(false);
   resize();
-  ({intro:sIntro,predict:sPredict,shape:sShape,surface:sSurface,wrap:sWrap,actA:sActA,more:sMore,actC:sActC,actB:sActB,finish:sFinish})[stage]()}
-prevBtn.onclick=()=>{const s=S.stage;if(s==='actC'||s==='actB')return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.max(0,i-1)],i<=1)};
-nextBtn.onclick=()=>{const s=S.stage;if(s==='actC'||s==='actB')return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.min(STAGES.length-1,i+1)])};
+  ({intro:sIntro,predict:sPredict,shape:sShape,surface:sSurface,wrap:sWrap,actA:sActA,more:sMore,actC:sActC,actB:sActB,actD:sActD,finish:sFinish})[stage]()}
+prevBtn.onclick=()=>{const s=S.stage;if(/^act[CBD]$/.test(s))return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.max(0,i-1)],i<=1)};
+nextBtn.onclick=()=>{const s=S.stage;if(/^act[CBD]$/.test(s))return go('more');const i=STAGES.indexOf(s);go(STAGES[Math.min(STAGES.length-1,i+1)])};
 
 function sIntro(){$('#bStart').onclick=()=>prepCheck(()=>{S=fresh();go('predict')});const o=load();const b=$('#bResume');if(o&&o.stage!=='intro'){b.style.display='';b.onclick=()=>{S=o;go(S.stage)}}else b.style.display='none'}
 
@@ -674,7 +714,7 @@ function sActA(){V.sunMode='flat';fly(0,0,4.2);strokes=[];const d=$('#draw');d.c
   const saveDraw=()=>{const r=SR(),sz=Math.min(r.h*.92,r.w*.92),sx=(r.w-sz)/2,sy=(r.h-sz)/2;const o=document.createElement('canvas');o.width=o.height=480;const x=o.getContext('2d');const pr=canvas.width/r.w;renderer.render(scene,camera);x.drawImage(canvas,sx*pr,sy*pr,sz*pr,sz*pr,0,0,480,480);const dr=$('#draw'),dp=dr.width/r.w;x.drawImage(dr,sx*dp,sy*dp,sz*dp,sz*dp,0,0,480,480);S.draw=o.toDataURL('image/jpeg',.85);S.drawName=$('#aName').value.trim();save();toast('일지에 붙였어요.','note');$('#aSave').classList.remove('pulse');$('#aFb').innerHTML='<p class="fb"><b>기록됨</b> 「'+esc(S.drawName)+'」 친구가 본 모양과 비교해 봐요.</p>';side.scrollTop=side.scrollHeight;inst('✓','일지에 붙였어요. <b>다음</b>을 눌러 주세요.');allow(true,'다음')};
   paint()}
 
-function sMore(){$('#more').classList.add('show');$('#pickC').classList.toggle('done',!!S.site);$('#pickB').classList.toggle('done',S.bDone);$('#pickC').onclick=()=>go('actC');$('#pickB').onclick=()=>go('actB');allow(true,'마무리하기');nextBtn.classList.remove('pulse')}
+function sMore(){$('#more').classList.add('show');$('#pickC').classList.toggle('done',!!S.site);$('#pickB').classList.toggle('done',S.bDone);$('#pickD').classList.toggle('done',!!S.photo);$('#pickD').onclick=()=>go('actD');$('#pickC').onclick=()=>go('actC');$('#pickB').onclick=()=>go('actB');allow(true,'마무리하기');nextBtn.classList.remove('pulse')}
 
 /* 더 해 보기 C */
 function sActC(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.3);showGroup('site');$('#zoom').classList.add('show');chip(true);$('#flip').style.display='';allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
@@ -694,6 +734,66 @@ function sActC(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0,4.
   onTap=(x,y)=>{const s=pickSprite(x,y);if(s&&s.userData.group==='site')pickSite(s.userData.o.id)};
   draw()}
 
+/* 더 해 보기 D: 달 사진 찍기 — 스마트폰을 망원경에 대고, 갤럭시 카메라의 프로 모드로 밝기를 맞춰 찍는 과정을 그대로 눌러 봄 */
+const SEEN=['어두운 곳(달의 바다)','밝은 곳','충돌 구덩이'];
+const ISO_V=[50,100,200,400,800,1600,3200],SPD_V=[10,30,60,125,180,250,350,500,1000,2000,4000];   // SPEED는 1/값 초
+const HOW_GALAXY=['카메라 앱 아래쪽에서 <b>더보기</b> → <b>프로</b>를 눌러요.','<b>ISO</b>를 누르고 막대를 <b>50</b>까지 내려요.','<b>SPEED</b>를 누르고 <b>1/350</b>쯤으로 맞춰요. 달이 하얗게 보이면 숫자를 더 크게 해요.','흔들리지 않게 잡고 찍어요. 2초 타이머를 쓰면 좋아요.'];
+const HOW_IPHONE='아이폰은 프로 모드가 없어요. 화면 속 달을 <b>길게 눌러</b> 노란 네모가 생기면, 옆의 <b>해 모양</b>을 아래로 끌어 내려 어둡게 해요.';
+function sActD(){V.sunMode='relief';V.free=false;fly(0,0,5.6);V.az=0;V.el=0;allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
+  const ui=el('div','',`<div class="mask"></div><span class="lbl">망원경의 들여다보는 곳</span>
+   <div class="phone hint"><span class="cam"></span><canvas width="360" height="360"></canvas>
+    <div class="pui"><div class="prow"><button data-p="iso" data-q="1"><small>ISO</small><b></b></button><button data-p="spd" data-q="1"><small>SPEED</small><b></b></button><button disabled><small>EV</small><b>0.0</b></button><button disabled><small>FOCUS</small><b>자동</b></button><button disabled><small>WB</small><b>자동</b></button></div>
+     <div class="pslide"><b></b><input type="range" min="0" max="6" step="1" aria-label="값 맞추기"></div>
+     <div class="pmode"></div><button class="shut" aria-label="찍기" data-q="1"></button></div></div><div class="flash"></div>`);ui.id='photoUI';stageEl.append(ui);
+  const ph=ui.querySelector('.phone'),cv=ph.querySelector('canvas'),cx=cv.getContext('2d'),shut=ph.querySelector('.shut'),pmode=ph.querySelector('.pmode'),psl=ph.querySelector('.pslide'),rng=psl.querySelector('input'),pIso=ph.querySelector('[data-p=iso]'),pSpd=ph.querySelector('[data-p=spd]');
+  const CY=.36;let step=S.photo?6:1,er=100,pos=null,grab=null,iso=6,spd=0,auto=true,cur=null,more=false;
+  // 밝기: 값이 낮을수록(ISO), 빠를수록(SPEED) 어두워짐. 1이 알맞음
+  const bright=()=>auto?3.4:Math.min(3.6,Math.sqrt(350/SPD_V[spd])*Math.pow(ISO_V[iso]/50,.35));
+  // 크게 볼 때는 스마트폰을 가로로 눕힘(무대가 낮아 세로로는 글자가 너무 작아짐)
+  const size=()=>{const r=SR();er=Math.min(r.w*.4,r.h*.27);ui.style.setProperty('--cy',r.h*CY+'px');ui.style.setProperty('--er',er+'px');camera.setViewOffset(r.w,r.h,0,r.h*(.5-CY),r.w,r.h);camera.updateProjectionMatrix();
+    const big=step>1,phH=big?Math.min(r.h-14,460):Math.max(190,Math.min(r.h*.6,440)),pw=big?Math.min(r.w-14,phH*2.25):Math.min(phH*.56,r.w*.94);ui.style.setProperty('--ph',phH+'px');ui.style.setProperty('--pw',pw+'px');ph.classList.toggle('big',big);
+    if(big)pos={x:(r.w-pw)/2,y:(r.h-phH)/2};else if(!pos)pos={x:Math.max(8,r.w-pw-70),y:Math.max(8,r.h-phH-12)};ph.style.left=pos.x+'px';ph.style.top=pos.y+'px'};
+  const off=()=>{if(step>1)return{dx:0,dy:0};const r=SR();return{dx:pos.x+ph.offsetWidth/2-r.w/2,dy:pos.y+26-r.h*CY}};
+  const side_=()=>{setSide(`<span class="eyebrow">더 해 보기</span><h2>달 사진을 찍어 볼까요?</h2>
+    ${S.photo?`<img class="shotimg" src="${S.photo}" alt="내가 찍은 달 사진"><h3>내가 찍은 사진에서 무엇이 보이나요?</h3><p class="note">보이는 것을 모두 골라요.</p><div class="opts">${SEEN.map((t,i)=>`<button class="opt${S.photoFound.includes(i)?' ok':''}" data-f="${i}">${t}</button>`).join('')}</div>`:'<p>스마트폰을 망원경에 대면 달 표면을 사진으로 남길 수 있어요. 스마트폰 화면의 단추를 차례대로 눌러 보세요.</p>'}
+    <h3>진짜 스마트폰으로 찍을 때</h3><p class="note">갤럭시 스마트폰</p><ol class="howto">${HOW_GALAXY.map(t=>'<li>'+t+'</li>').join('')}</ol>
+    <p class="note">아이폰</p><p class="howto" style="padding-left:14px">${HOW_IPHONE}</p>
+    <p class="note">망원경이 없으면 가장 멀리 당겨 찍는 렌즈로 바꿔서 해 봐요. 밤에는 어른과 함께 해요.</p>
+    ${S.photo?'<div class="row"><button class="btn line" id="dAgain">다시 찍기</button></div>':''}`);
+    $$('#side [data-f]').forEach(b=>b.onclick=()=>{const i=+b.dataset.f,k=S.photoFound.indexOf(i);k<0?S.photoFound.push(i):S.photoFound.splice(k,1);save();const sc=side.scrollTop;side_();side.scrollTop=sc});
+    const a=$('#dAgain');if(a)a.onclick=()=>{S.photo=null;S.photoFound=[];save();go('actD')}};
+  const modes=()=>{const pro=step>=3;ph.classList.toggle('pro',pro);pmode.innerHTML=(more||pro?[['photo','사진'],['pro','프로'],['prov','프로 동영상']]:[['photo','사진'],['video','동영상'],['more','더보기']]).map(m=>`<button data-m="${m[0]}" data-q="1" class="${(pro?m[0]==='pro':m[0]==='photo')?'on':''}${step===2&&m[0]===(more?'pro':'more')?' tgt':''}">${m[1]}</button>`).join('');
+    pmode.querySelectorAll('button').forEach(b=>b.onclick=()=>{const m=b.dataset.m;if(step!==2){snd('click');return}if(m==='more'){more=true;snd('click');modes()}else if(m==='pro'){step=3;auto=true;snd('note');draw()}else toast(more?'<b>프로</b>를 눌러 주세요.':'<b>더보기</b>를 눌러 주세요.','warn')})};
+  const draw=()=>{ph.classList.toggle('hint',step===1);modes();
+    pIso.querySelector('b').textContent=(auto&&step<4?'자동 ':'')+ISO_V[iso];pSpd.querySelector('b').textContent=(auto?'자동 ':'')+'1/'+SPD_V[spd];
+    pIso.classList.toggle('on',cur==='iso');pSpd.classList.toggle('on',cur==='spd');pIso.classList.toggle('tgt',step===3&&cur!=='iso');pSpd.classList.toggle('tgt',step===4&&cur!=='spd');
+    psl.classList.toggle('on',!!cur&&step<6);if(cur){rng.max=cur==='iso'?6:10;rng.value=cur==='iso'?iso:spd;psl.querySelector('b').textContent=cur==='iso'?'ISO '+ISO_V[iso]:'1/'+SPD_V[spd]}
+    shut.classList.toggle('on',step===5);
+    if(step===1)inst('01','<b>스마트폰</b>을 끌어서 <b>카메라 동그라미</b>를 망원경의 들여다보는 곳 가운데에 대 주세요.');
+    else if(step===2)inst('02',more?'달이 하얗게만 보여요. <b>프로</b>를 눌러 주세요.':'달이 하얗게만 보여요. 아래쪽의 <b>더보기</b>를 눌러 주세요.');
+    else if(step===3)inst('03',cur==='iso'?'막대를 끌어서 ISO를 <b>50</b>까지 내려 주세요.':'<b>ISO</b>를 눌러 주세요.');
+    else if(step===4)inst('04',cur==='spd'?'막대를 끌어서 SPEED를 <b>1/350</b>쯤으로 맞춰 주세요. 달 표면이 보이면 돼요.':'아직 밝아요. <b>SPEED</b>를 눌러 주세요.');
+    else if(step===5)inst('05','달 표면이 잘 보여요. <b>흰 단추</b>를 눌러 찰칵 찍어 주세요.');
+    else inst('✓','달 사진을 찍어 일지에 붙였어요. 사진에서 <b>무엇이 보이는지</b> 골라 보세요.')};
+  // 01 스마트폰 끌어서 대기
+  ph.onpointerdown=e=>{if(step!==1)return;ph.setPointerCapture(e.pointerId);grab={x:e.clientX-pos.x,y:e.clientY-pos.y};ph.classList.remove('hint');ph.classList.add('drag')};
+  ph.onpointermove=e=>{if(!grab)return;const r=SR();pos.x=Math.max(-40,Math.min(r.w-40,e.clientX-grab.x));pos.y=Math.max(-10,Math.min(r.h-60,e.clientY-grab.y));ph.style.left=pos.x+'px';ph.style.top=pos.y+'px'};
+  ph.onpointerup=ph.onpointercancel=()=>{if(!grab)return;grab=null;ph.classList.remove('drag');const o=off(),d=Math.hypot(o.dx,o.dy);if(d<er*.22){step=2;size();draw();toast('카메라를 잘 맞췄어요. 스마트폰 화면을 크게 볼게요.','note')}else if(d<er*1.4)toast('조금만 더 가운데로 옮겨 보세요.','warn')};
+  // 03·04 ISO, SPEED
+  pIso.onclick=()=>{if(step<3||step>5)return;if(step===3&&auto){auto=false}cur='iso';snd('click');draw()};
+  pSpd.onclick=()=>{if(step<3||step>5)return;if(step===3){toast('먼저 <b>ISO</b>를 눌러 주세요.','warn');return}auto=false;cur='spd';snd('click');draw()};
+  rng.oninput=()=>{if(!cur)return;const v=+rng.value;if(cur==='iso'){iso=v;if(step===3&&iso===0){step=4;cur=null;toast('ISO를 50으로 내렸어요.','note')}}else{spd=v;const ok=spd>=5&&spd<=7;if(step===4&&ok){step=5;toast('달 표면이 잘 보여요.','note')}else if(step===5&&!ok)step=4}draw()};
+  // 05 찍기
+  shut.onclick=()=>{if(step!==5){toast('아직 찍을 수 없어요. 위쪽 안내를 따라 해 주세요.','warn');return}snd('shutter');const fl=ui.querySelector('.flash');fl.style.opacity=.9;setTimeout(()=>fl.style.opacity=0,120);
+    const r=SR(),pr=canvas.width/r.w,o=document.createElement('canvas');o.width=o.height=360;const x=o.getContext('2d');renderer.render(scene,camera);if('filter' in x)x.filter=`brightness(${bright()})`;const sz=er*2.06;x.drawImage(canvas,(r.w/2-sz/2)*pr,(r.h*CY-sz/2)*pr,sz*pr,sz*pr,0,0,360,360);
+    S.photo=o.toDataURL('image/jpeg',.86);save();step=6;cur=null;draw();side_();toast('찰칵! 달 사진을 일지에 붙였어요.')};
+  // 스마트폰 화면: 카메라가 맞은 만큼 달이 화면 가운데로 들어옴
+  frameHook=()=>{if(S.stage!=='actD')return;const r=SR();if(r.w<2)return;const cw=cv.clientWidth,ch=cv.clientHeight;if(cv.width!==cw||cv.height!==ch){cv.width=cw;cv.height=ch}const o=off(),pr=canvas.width/r.w,W=cv.width,H=cv.height;cx.fillStyle='#000';cx.fillRect(0,0,W,H);
+    if(Math.hypot(o.dx,o.dy)<er*1.5){const sz=er*2.06,d=Math.min(W,H)*.9,k=d/sz;cx.save();cx.beginPath();cx.arc(W/2-o.dx*k,H/2-o.dy*k,d/2,0,7);cx.clip();cx.drawImage(canvas,(r.w/2-sz/2)*pr,(r.h*CY-sz/2)*pr,sz*pr,sz*pr,W/2-o.dx*k-d/2,H/2-o.dy*k-d/2,d,d);cx.restore()}
+    cv.style.filter=`brightness(${step>=6?1:bright()})`};
+  if(step===6){auto=false;iso=0;spd=6}
+  size();draw();side_();const onRs=()=>{if(S.stage==='actD'&&$('#photoUI')){size();draw()}};addEventListener('resize',onRs)}
+
 /* 더 해 보기 B */
 function sActB(){$('#actB').classList.add('show');allow(true,'더 해 보기로');nextBtn.classList.remove('pulse');
   const c=$('#impact'),x=c.getContext('2d'),W=c.width,H=c.height,G=H*.66;let craters=[],rocks=[],dust=[],stars=[...Array(60)].map(()=>[Math.random()*W,Math.random()*G*.9,Math.random()*1.5+.3]);
@@ -711,8 +811,8 @@ function sActB(){$('#actB').classList.add('show');allow(true,'더 해 보기로'
    dust=dust.filter(d=>d.l>0);dust.forEach(d=>{d.x+=d.vx*f;d.y+=d.vy*f;d.vy+=.18*f;d.l-=.02*f;x.globalAlpha=Math.max(0,d.l);x.fillStyle='#d9dbe2';x.beginPath();x.arc(d.x,d.y,3,0,7);x.fill()});x.globalAlpha=1}}
 
 /* 마무리 */
-function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');SPOTS.forEach(o=>{if(S.found[o.id])L.push(o.log)});if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.bDone)L.push("'충돌 구덩이'라고 부르는 까닭: "+esc(S.bTxt||'돌을 떨어뜨리자 부딪친 자리에 구덩이가 생겼다.'));
-  const d=new Date();return `<h3>달 관찰 일지 ${S.name?'· '+esc(S.name):''}</h3><small>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 4학년 2학기 과학 1. 밤하늘 관찰</small>${L.length?'<ul>'+L.map(t=>'<li>'+t+'</li>').join('')+'</ul>':'<p>아직 기록이 없어요.</p>'}${S.draw?`<div><img src="${S.draw}" alt="내가 그린 달 무늬"><br><small>달 무늬에서 본 모양: ${esc(S.drawName)}</small></div>`:''}`}
+function journalHTML(){const L=[];if(S.shape.ok)L.push('망원경으로 본 달은 둥근 공 모양이었다.');SPOTS.forEach(o=>{if(S.found[o.id])L.push(o.log)});if(S.think)L.push("'달의 바다'라고 부르는 까닭: "+esc(S.think));if(S.site){const o=SITES.find(s=>s.id===S.site);L.push(`탐사선 착륙 지점으로 ${o.id}(${o.desc})를 골랐다. 까닭: `+esc([...S.siteWhy.map(i=>WHY[i]),S.siteTxt].filter(Boolean).join(' ')))}if(S.photo)L.push('스마트폰을 망원경에 대고 달 사진을 찍었다. (갤럭시: 더보기 → 프로, ISO 50, SPEED 1/350쯤)'+(S.photoFound.length?' 사진에서 찾은 것: '+S.photoFound.map(i=>SEEN[i]).join(', ')+'.':''));if(S.bDone)L.push("'충돌 구덩이'라고 부르는 까닭: "+esc(S.bTxt||'돌을 떨어뜨리자 부딪친 자리에 구덩이가 생겼다.'));
+  const d=new Date();return `<h3>달 관찰 일지 ${S.name?'· '+esc(S.name):''}</h3><small>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 4학년 2학기 과학 1. 밤하늘 관찰</small>${L.length?'<ul>'+L.map(t=>'<li>'+t+'</li>').join('')+'</ul>':'<p>아직 기록이 없어요.</p>'}${S.photo?`<div><img src="${S.photo}" alt="내가 찍은 달 사진"><br><small>내가 찍은 달 사진</small></div>`:''}${S.draw?`<div><img src="${S.draw}" alt="내가 그린 달 무늬"><br><small>달 무늬에서 본 모양: ${esc(S.drawName)}</small></div>`:''}`}
 function endPop(){S.endSeen=true;save();pop(`<span class="cup">${ic('cup')}</span><h2>관찰 활동을 모두 마쳤어요!</h2><p>다음에 무엇을 해 볼까요?</p><div class="row" style="justify-content:center"><button class="btn line" id="endAgain">${ic('reset')}처음부터 다시 하기</button><button class="btn" id="endMore">${ic('moon')}더 해 보기</button></div>`,'center');snd('fanfare');
   $('#endAgain').onclick=()=>{closePop();S=fresh();save();go('intro',true)};$('#endMore').onclick=()=>{closePop();go('more')}}
 function sFinish(){$('#finish').classList.add('show');const f=$('#faces');f.innerHTML='';FACES.forEach(([k,t],i)=>{const row=el('div','erow',`<span class="tg">${k}</span><p>${t}</p>`);const g=el('div','faces');Object.keys(FACE_SVG).forEach(w=>{const b=el('button','face'+(S.faces[i]===w?' on':''),`<svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="18.5"/>${FACE_SVG[w]}</svg><span>${w}</span>`);b.setAttribute('aria-label',w);b.onclick=()=>{const was=Object.keys(S.faces).length;S.faces[i]=w;save();sFinish();if(was<3&&Object.keys(S.faces).length===3)setTimeout(endPop,350)};g.append(b)});row.append(g);f.append(row)});

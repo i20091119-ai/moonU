@@ -43,6 +43,13 @@ await p.click('#cGo');await shot('actC_land',2600);
 await p.click('#bNext');await p.click('#pickB');await shot('actB');
 const ib=await p.locator('#impact').boundingBox();for(const fx of [.25,.5,.75]){await p.mouse.click(ib.x+ib.width*fx,ib.y+30);await p.waitForTimeout(1500)}
 await shot('actB_done');
+await p.click('#bNext');await p.click('#pickD');await shot('actD',2500);
+{const sr=await p.evaluate(()=>SR());const cam=await p.locator('.phone .cam').boundingBox();const from={x:cam.x+17,y:cam.y+60},to={x:sr.x+sr.w/2,y:sr.y+sr.h*.36+43};
+ await p.mouse.move(from.x,from.y);await p.mouse.down();await p.mouse.move(to.x,to.y,{steps:12});await p.mouse.up();await shot('actD_aligned',700);
+ await p.locator('.pmode [data-m=more]').click();await p.waitForTimeout(200);await p.locator('.pmode [data-m=pro]').click();await shot('actD_pro',500);
+ await p.locator('.prow [data-p=iso]').click();await p.locator('.pslide input').fill('0');await shot('actD_iso',500);
+ await p.locator('.prow [data-p=spd]').click();await p.locator('.pslide input').fill('6');await shot('actD_speed',500);
+ await p.locator('.phone .shut').click();await shot('actD_shot',900);await p.locator('#side [data-f]').nth(2).click();await p.waitForTimeout(200)}
 await p.click('#bNext');await p.click('#bNext');await shot('finish');
 for(const i of [0,4,8])await p.locator('.face').nth(i).click();
 await shot('finish_popup',1200);await p.click('#popX');await shot('finish_done',500);
