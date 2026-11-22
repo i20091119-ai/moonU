@@ -50,7 +50,7 @@
 - `assets/tb_*.jpg`, `video/help.mp4` — 동아 교과서·지도서 그림과 도움 영상
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png` — ChatGPT 그림 도구로 제작
 - `fonts/` — 잘난체(제목), G마켓 산스(본문). 동아 샘플과 같은 글꼴
-- `assets/dg_it_*.webp` — 동아 샘플의 3D 아이콘(인트로 단추)
+- `assets/ic_*.png`, `prep_tablet.png` — ChatGPT 그림 도구로 제작한 3D 점토풍 아이콘(인트로·머리 단추)과 준비물 그림. 요청 문장은 `docs/그림_요청서.md`
 - 디버그: 브라우저 콘솔에서 `__moon.go('surface')`처럼 단계 이동
 
 ## 확인 방법
