@@ -12,11 +12,14 @@ const stageXY=async(lat,lon)=>p.evaluate(([lat,lon])=>{const r=SR(),q=screenOf(l
 await p.goto('file://'+path.resolve(__dirname,'../index.html'));await shot('intro',2500);
 await p.click('#bStart');await shot('prep_check',400);for(const e of await p.$$('#popBox .pitem')){await e.click();await p.waitForTimeout(150)}await shot('prep_checked',200);await p.waitForTimeout(1300);await shot('predict');
 await p.locator('#predOpts .opt').nth(1).click();await shot('predict_done',500);
-await p.click('#bNext');await shot('shape1',1500);
+await p.click('#bNext');await shot('shape1_aim',1500);
 let r=await p.evaluate(()=>SR());
-await p.mouse.click(r.x+r.w/2,r.y+r.h/2);await shot('shape2',2200);
-await p.mouse.move(r.x+r.w/2-150,r.y+r.h/2);await p.mouse.down();for(let i=0;i<16;i++){await p.mouse.move(r.x+r.w/2-150+(i%8)*45,r.y+r.h/2+((i%2)*40),{steps:4})}await p.mouse.up();
-await shot('shape3');
+// 01 달을 끌어 가운데로 (달은 가운데에서 오른쪽 위로 벗어나 있음)
+{const mx=r.x+r.w/2+r.w*.24,my=r.y+r.h/2-r.h*.2;await p.mouse.move(mx,my);await p.mouse.down();await p.mouse.move(r.x+r.w/2,r.y+r.h/2,{steps:14});await p.mouse.up()}
+await shot('shape2_focus',2200);
+await p.locator('#focusBar input').fill('40');await shot('shape2_blur',300);await p.locator('#focusBar input').fill('64');await shot('shape3_duo',2200);
+await p.mouse.move(r.x+r.w*.75-80,r.y+r.h/2);await p.mouse.down();for(let i=0;i<20;i++){await p.mouse.move(r.x+r.w*.75-80+(i%10)*24,r.y+r.h/2+((i%2)*30),{steps:3})}await p.mouse.up();
+await p.evaluate(()=>{V.t.az=82;V.az=82});await shot('shape3_side',700);
 await p.locator('#shapeOpts .opt').nth(0).click();await shot('shape_wrong',400);
 await p.locator('#shapeOpts .opt').nth(1).click();await shot('shape_ok',600);
 await p.click('#bNext');await shot('surface',2500);
