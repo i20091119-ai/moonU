@@ -6,25 +6,27 @@
 <title>달 관측소 - 달의 모양과 표면 관찰</title>
 <style>
 /* 색·글꼴·둥글기는 동아 확정 샘플(실험관찰+가상실험실)의 가상실험실 화면 값을 따름. 단원 색은 --pri 하나로 바꿀 수 있음 */
-@font-face{font-family:'Jalnan';src:url('fonts/jalnan.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Gmarket';font-weight:100 349;src:url('fonts/gmarket-300.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Gmarket';font-weight:350 649;src:url('fonts/gmarket-500.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Gmarket';font-weight:650 900;src:url('fonts/gmarket-700.woff2') format('woff2');font-display:swap}
+/* 글꼴 파일의 세로 기준값이 윈도우와 그 밖에서 다르게 읽혀 글자가 칸 위쪽으로 치우침(윈도우에서 약 10%).
+   ascent/descent를 여기서 고정해 한글·숫자의 가운데가 줄 가운데에 오게 함. 값을 바꾸면 tools/check_align.js로 다시 잴 것 */
+@font-face{font-family:'Jalnan';src:url('fonts/jalnan.woff2') format('woff2');font-display:swap;ascent-override:100%;descent-override:22%;line-gap-override:0%}
+@font-face{font-family:'Gmarket';font-weight:100 349;src:url('fonts/gmarket-300.woff2') format('woff2');font-display:swap;ascent-override:92%;descent-override:28%;line-gap-override:0%}
+@font-face{font-family:'Gmarket';font-weight:350 649;src:url('fonts/gmarket-500.woff2') format('woff2');font-display:swap;ascent-override:92%;descent-override:28%;line-gap-override:0%}
+@font-face{font-family:'Gmarket';font-weight:650 900;src:url('fonts/gmarket-700.woff2') format('woff2');font-display:swap;ascent-override:92%;descent-override:28%;line-gap-override:0%}
 :root{--u:min(1vw,1.78vh);--pri:#BC499B;--pri-d:#8E2F74;--soft:#F8EBF4;--soft2:#FCF5FA;--line:#EBD5E4;--pink:#D8A0C8;--key:#FFE08A;--ink:#221E1F;--sub:#6D6E71;--ok:#17955A;--ok-soft:#E8F6EE;--warn:#E5622B;--warn-soft:#FDEEE7;--ans:#1E6FE0;--paper:#FBF8F3;--edge:#E9E1DA;--sky:#05081a;
 --fd:'Jalnan','Gmarket','Malgun Gothic',sans-serif;--fb:'Gmarket','Malgun Gothic','Apple SD Gothic Neo',sans-serif;
 --fs-h:clamp(22px,2.1vw,34px);--fs-inst:clamp(16px,1.35vw,22px);--fs-body:clamp(15px,1.2vw,19px);--fs-sub:clamp(13px,1vw,16px);--pad:clamp(14px,2.2vw,40px)}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--fb);font-weight:500;font-size:var(--fs-body);letter-spacing:-.01em;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--fb);font-weight:500;font-size:var(--fs-body);letter-spacing:-.01em;word-break:keep-all;overflow-wrap:break-word;-webkit-user-select:none;user-select:none}
 button{font-family:inherit;cursor:pointer;border:0;color:inherit;background:none;padding:0}
 b{font-weight:700}
 svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 #app{position:fixed;inset:0;display:flex;flex-direction:column}
 /* 머리 */
 #top{display:flex;align-items:center;gap:14px;padding:6px var(--pad);border-bottom:1px solid #ECE4DC;flex:none}
-.logo{display:flex;align-items:center;gap:10px;flex:none}
-.logo .mk{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 34% 32%,#fff 0,#F3D3E7 38%,var(--pri) 100%);box-shadow:inset -5px -4px 0 rgba(142,47,116,.25)}
+.logo{display:flex;align-items:center;gap:8px;flex:none}
+.logo .mk{height:clamp(44px,calc(var(--u)*4.4),64px);filter:drop-shadow(0 3px 4px rgba(60,40,60,.18))}
 .logo small{display:block;font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--pri);line-height:1}
-.logo b{display:block;font-family:var(--fd);font-weight:400;font-size:20px;line-height:1.15}
+.logo b{display:block;font-family:var(--fd);font-weight:400;font-size:clamp(18px,calc(var(--u)*1.8),26px);line-height:1.15}
 #top .ttl{color:#4A4446;padding-left:14px;border-left:1.5px solid #D9CFD5;font-size:var(--fs-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #top .sp{flex:1}
 .hd{display:inline-flex;align-items:center;gap:7px;min-height:46px;padding:0 15px;border-radius:14px;background:#fff;border:1px solid var(--edge);box-shadow:0 2px 0 var(--edge);font-weight:700;font-size:var(--fs-sub);white-space:nowrap;color:var(--ink)}
@@ -145,11 +147,11 @@ textarea{min-height:76px;resize:none}
 #reset{position:absolute;left:14px;bottom:14px;z-index:4;display:grid;place-items:center;align-content:center;gap:1px;width:clamp(56px,5vw,72px);aspect-ratio:1;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
 #reset svg{width:22px;height:22px}
 /* 준비물 확인 */
-.pitems{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#F0D9E8;border-radius:22px;padding:14px}
+.pitems{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(var(--fs-inst)*13)),1fr));gap:12px;background:#F0D9E8;border-radius:22px;padding:14px}
 .pitem{display:flex;align-items:center;gap:12px;background:var(--soft2);border:2px solid #fff;border-radius:16px;padding:10px 12px;text-align:left;font-weight:700;font-size:var(--fs-inst);color:var(--ink)}
-.pitem .pic{flex:none;width:clamp(64px,8vw,96px);aspect-ratio:1;border-radius:12px;background:#F7F8FA center/cover no-repeat;display:grid;place-items:center;color:#8C7F88}
+.pitem .pic{flex:none;width:clamp(56px,8vw,96px);aspect-ratio:1;border-radius:12px;background:#F7F8FA center/cover no-repeat;display:grid;place-items:center;color:#8C7F88}
 .pitem .pic svg{width:62%;height:62%;stroke-width:1.6}
-.pitem .nm{flex:1}.pitem small{display:block;font-weight:500;color:var(--sub);font-size:var(--fs-sub)}
+.pitem .nm{flex:1;min-width:0;line-height:1.3;white-space:nowrap}.pitem small{display:block;font-weight:500;color:var(--sub);font-size:var(--fs-sub)}
 .pitem .bx{flex:none;width:28px;height:28px;border-radius:9px;border:2px solid var(--pink);background:#fff;display:grid;place-items:center;color:transparent}
 .pitem.on .bx{background:var(--pri);border-color:var(--pri);color:#fff}
 .pitem.view{flex-direction:column;text-align:center}.pitem.view .pic{width:100%;aspect-ratio:1.5}
@@ -165,31 +167,34 @@ textarea{min-height:76px;resize:none}
 /* 인트로 */
 #intro{position:fixed;inset:0;z-index:60;display:none;overflow:auto;background:linear-gradient(rgba(120,100,80,.06) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,rgba(120,100,80,.06) 1px,transparent 1px) 0 0/34px 34px,var(--paper)}
 body[data-mode=intro] #intro{display:block}
-.it-wrap{min-height:100%;display:flex;flex-direction:column;gap:20px;padding:clamp(18px,3.4vh,44px) clamp(18px,4vw,64px)}
-.it-top,.it-foot{display:flex;gap:12px;flex-wrap:wrap}.it-top{justify-content:space-between}.it-foot{justify-content:flex-end}
+.it-wrap{min-height:100%;max-width:1680px;margin:0 auto;display:flex;flex-direction:column;padding:clamp(14px,3.4vh,40px) clamp(16px,4vw,72px) clamp(16px,4.4vh,52px)}
+.it-top,.it-foot{display:flex;flex-wrap:wrap}.it-top{align-items:center;justify-content:space-between;gap:16px}.it-foot{justify-content:flex-end;gap:clamp(10px,1.2vw,20px)}
 .pill{display:flex;align-items:center;gap:.55em;padding:.5em 1.1em;border-radius:999px;background:#fff;border:1px solid var(--edge);box-shadow:0 2px 0 var(--edge);font-size:clamp(14px,1.3vw,22px)}
 .pill svg{color:var(--pri)}.pill i{width:1.5px;height:1em;background:#D9CFD5}
 .pill em{font-style:normal;font-weight:700;color:var(--pri-d);background:var(--soft);border-radius:999px;padding:.1em .7em}
-.it-hero{flex:1;display:flex;align-items:center;justify-content:space-between;gap:4vw}
-.it-h{font-family:var(--fd);font-weight:400;font-size:clamp(34px,5.2vw,84px);line-height:1.22;margin:0;letter-spacing:-.03em;color:#2A2430}
-.it-h em{font-style:normal;color:var(--pri);background:linear-gradient(transparent 78%,var(--key) 78%,var(--key) 96%,transparent 96%);border-radius:4px}
+.it-hero{flex:1;display:flex;align-items:center;justify-content:space-between;gap:2vw;min-height:0;padding:clamp(8px,2vh,30px) 0 clamp(10px,2.4vh,34px)}
+.it-copy{flex:1 1 auto;min-width:0;animation:it-up .7s cubic-bezier(.2,.8,.2,1) both}
+.it-h{font-family:var(--fd);font-weight:400;font-size:clamp(34px,4.7vw,90px);line-height:1.3;margin:0;letter-spacing:-.035em;color:#2A2430}
+.it-h em{font-style:normal;color:var(--pri);position:relative;z-index:0;display:inline-block}
+.it-h em::after{content:'';position:absolute;z-index:-1;left:-.04em;right:-.04em;bottom:.06em;height:.3em;border-radius:.2em;background:#FFD54F;opacity:.85;transform-origin:left;animation:it-hl .6s .55s cubic-bezier(.2,.8,.2,1) both}
 .it-goal{margin:18px 0 0;color:#4A4446;font-size:var(--fs-inst);line-height:1.6;max-width:30em}
-.it-go{--gh:clamp(64px,9.4vh,104px);position:relative;display:inline-flex;align-items:center;gap:calc(var(--gh)*.22);margin-top:clamp(26px,5vh,60px);height:var(--gh);padding:0 calc(var(--gh)*.16);border-radius:calc(var(--gh)*.3);background:var(--pri);color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.22),0 calc(var(--gh)*.1) 0 var(--pri-d),0 calc(var(--gh)*.1 + 12px) 20px rgba(142,47,116,.18);font-family:var(--fd);font-size:calc(var(--gh)*.36)}
+.it-go{--gh:clamp(64px,9.4vh,112px);position:relative;display:inline-flex;align-items:center;gap:calc(var(--gh)*.22);margin-top:clamp(26px,5vh,60px);animation:it-up .65s .25s cubic-bezier(.2,.8,.2,1) both;height:var(--gh);padding:0 calc(var(--gh)*.16);border-radius:calc(var(--gh)*.3);background:var(--pri);color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.22),0 calc(var(--gh)*.1) 0 var(--pri-d),0 calc(var(--gh)*.1 + 12px) 20px rgba(142,47,116,.18);font-family:var(--fd);font-size:calc(var(--gh)*.36)}
 .it-go:active{transform:translateY(calc(var(--gh)*.08));box-shadow:0 2px 0 var(--pri-d)}
-.it-go .tile{width:calc(var(--gh)*.68);height:calc(var(--gh)*.68);border-radius:calc(var(--gh)*.2);background:#fff;display:grid;place-items:center}
-.it-go .tile img{width:112%;transform:translateY(-8%)}
+.it-go .tile{position:relative;flex:none;width:calc(var(--gh)*.78);height:calc(var(--gh)*.78);border-radius:calc(var(--gh)*.22);background:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08)}
+.it-go .tile img{position:absolute;left:50%;bottom:4%;width:132%;height:132%;object-fit:contain;transform:translateX(-50%) rotate(-6deg);transform-origin:50% 100%;filter:drop-shadow(0 6px 10px rgba(60,20,50,.28));transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+.it-go:hover .tile img{transform:translateX(-50%) rotate(-1deg) translateY(-6px) scale(1.05)}
 .it-go .arw{width:calc(var(--gh)*.5);height:calc(var(--gh)*.5);border-radius:calc(var(--gh)*.14);background:var(--key);color:var(--pri-d);display:grid;place-items:center;box-shadow:0 3px 0 #E0B84A}
-.it-go .tag{position:absolute;right:-18px;top:-16px;transform:rotate(8deg);background:#F2884B;color:#fff;border-radius:8px;padding:3px 9px;font-size:calc(var(--gh)*.22);box-shadow:0 2px 0 #C96A32}
-.it-art{position:relative;flex:none;width:min(44vw,70vh,620px);aspect-ratio:1.18;border-radius:clamp(24px,3vw,48px);border:6px solid #fff;box-shadow:0 3px 0 var(--edge),0 22px 40px rgba(60,40,60,.16);background:#0b1a5c url('assets/bg_hill.jpg') left bottom/cover no-repeat;transform:rotate(1.5deg);overflow:hidden}
-.it-art img{position:absolute;right:11%;top:9%;width:40%;border-radius:50%;box-shadow:0 0 0 6px rgba(255,255,255,.08),0 0 50px 10px rgba(255,246,200,.35)}
-.it-sub{display:flex;align-items:center;gap:10px;min-height:clamp(58px,8vh,84px);padding:6px 14px 6px 10px;border-radius:22px;background:#fff;border:1px solid var(--edge);box-shadow:0 3px 0 var(--edge);font-family:var(--fd);font-size:clamp(16px,1.5vw,24px)}
+.it-go .tag{position:absolute;top:calc(var(--gh)*-.3);right:calc(var(--gh)*-.24);padding:.3em .7em .25em;border-radius:.6em;background:#F08A4B;color:#fff;font-size:calc(var(--gh)*.2);letter-spacing:.04em;transform:rotate(10deg);box-shadow:0 3px 0 rgba(0,0,0,.12);animation:it-wig 2.6s 1.6s ease-in-out infinite}
+.it-art{position:relative;flex:none;margin-right:1vw;animation:it-in .8s .15s cubic-bezier(.2,.8,.2,1) both;width:min(44vw,70vh,620px);aspect-ratio:1.18;border-radius:clamp(24px,3vw,48px);border:6px solid #fff;box-shadow:0 3px 0 var(--edge),0 22px 40px rgba(60,40,60,.16);background:#0b1a5c url('assets/bg_hill.jpg') left bottom/cover no-repeat;transform:rotate(1.5deg);overflow:hidden}
+.it-art img{position:absolute;right:11%;top:9%;width:40%;border-radius:50%;box-shadow:0 0 0 6px rgba(255,255,255,.08),0 0 50px 10px rgba(255,246,200,.35);animation:it-float 5s 1s ease-in-out infinite}
+.it-sub{display:flex;align-items:center;gap:10px;min-height:clamp(58px,8vh,84px);padding:6px 14px 6px 10px;border-radius:22px;background:#fff;border:1px solid var(--edge);box-shadow:0 3px 0 var(--edge);font-family:var(--fd);font-size:clamp(16px,1.5vw,24px);animation:it-up .6s .35s cubic-bezier(.2,.8,.2,1) both}
 .it-sub img{height:clamp(40px,6vh,60px)}
 .it-sub .arw{width:30px;height:30px;border-radius:50%;background:#D9694A;color:#fff;display:grid;place-items:center}
 .it-sub.c2 .arw{background:#3F8C7A}
 /* 팝업, 알림 */
 #pop{position:fixed;inset:0;background:rgba(40,22,35,.32);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);z-index:80;display:none;align-items:center;justify-content:center;padding:20px}
 #pop.show{display:flex}
-#pop .box{position:relative;background:#fff;border-radius:28px;box-shadow:0 30px 80px rgba(40,10,30,.28);padding:clamp(22px,3vw,40px);max-width:680px;width:100%;display:flex;flex-direction:column;gap:14px;max-height:92vh;overflow:auto;animation:popin .28s cubic-bezier(.2,.9,.3,1.2);-webkit-user-select:text;user-select:text}
+#pop .box{position:relative;background:#fff;border-radius:28px;box-shadow:0 30px 80px rgba(40,10,30,.28);padding:clamp(22px,3vw,40px);max-width:clamp(680px,46vw,860px);width:100%;display:flex;flex-direction:column;gap:14px;max-height:92vh;overflow:auto;animation:popin .28s cubic-bezier(.2,.9,.3,1.2);-webkit-user-select:text;user-select:text}
 #pop h2{font-family:var(--fd);font-weight:400;margin:0;font-size:var(--fs-h);padding-right:50px}
 #pop p{margin:0;line-height:1.6}
 #pop video{width:100%;border-radius:16px;background:#000}
@@ -198,6 +203,12 @@ body[data-mode=intro] #intro{display:block}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 #toast.warn{background:var(--warn)}
 #toast i{font-style:normal;flex:none;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center}
+@keyframes it-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes it-in{from{opacity:0;transform:translateX(30px) rotate(1.5deg) scale(.94)}to{opacity:1;transform:rotate(1.5deg)}}
+@keyframes it-float{50%{transform:translateY(-12px)}}
+@keyframes it-hl{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes it-wig{0%,70%,100%{transform:rotate(10deg)}78%{transform:rotate(2deg) scale(1.08)}86%{transform:rotate(14deg)}}
+@media (prefers-reduced-motion:reduce){.it-art img,.it-go .tag{animation:none}}
 @keyframes halo{0%,100%{box-shadow:0 5px 0 var(--pri-d),0 0 0 0 rgba(188,73,155,.45)}50%{box-shadow:0 5px 0 var(--pri-d),0 0 0 10px rgba(188,73,155,.14)}}
 @keyframes dragx{0%,100%{transform:translateX(-70px)}50%{transform:translateX(70px)}}
 @keyframes tap{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(8px) scale(.9)}}
@@ -233,7 +244,7 @@ body[data-mode=intro] #app{visibility:hidden}
 
 <div id="app">
   <header id="top">
-    <div class="logo"><span class="mk"></span><span><small>VIRTUAL LAB</small><b>달 관측소</b></span></div>
+    <div class="logo"><img class="mk" src="assets/ic_start.png" alt=""><span><small>VIRTUAL LAB</small><b>달 관측소</b></span></div>
     <span class="ttl">달의 모양과 표면 관찰하기</span>
     <span class="sp"></span>
     <button class="hdi" id="bPrep" aria-label="준비물 보기"><img src="assets/ic_prep.png" alt=""><span>준비물</span></button>
@@ -328,7 +339,7 @@ body[data-mode=intro] #app{visibility:hidden}
     <div class="pill"><svg class="i"><use href="#i-book"/></svg><span>교과서</span><em>14 ~ 15쪽</em><i></i><svg class="i"><use href="#i-note"/></svg><span>실험관찰</span><em>10쪽</em></div>
   </div>
   <div class="it-hero">
-    <div>
+    <div class="it-copy">
       <h1 class="it-h">달의 <em>모양</em>과 <em>표면</em><br>관찰하기</h1>
       <p class="it-goal">망원경으로 달을 관찰하고, 달의 모양과 표면 모습을 알아봐요.</p>
       <button class="it-go" id="bStart"><span class="tile"><img src="assets/ic_start.png" alt=""></span><span>관찰 시작</span><span class="tag">START</span><span class="arw"><svg class="i"><use href="#i-right"/></svg></span></button>
@@ -366,9 +377,9 @@ const load=()=>{try{const t=localStorage.getItem(KEY);return t?Object.assign(fre
 const PRED=['매끈매끈하고 아무 무늬도 없을 것 같아요.','울퉁불퉁하고 구덩이가 있을 것 같아요.','물이 출렁이는 바다가 있을 것 같아요.','잘 모르겠어요. 직접 보고 싶어요.'];
 const Q3=['어둡고 매끈해 보여요.','밝고 울퉁불퉁해 보여요.','둥글게 움푹 파여 있어요.'];
 const SPOTS=[
- {id:'sea1',lat:8.5,lon:31.4,ans:0,name:'어두운 곳 1',term:'달의 바다',say:'달 표면의 어두운 곳을 <b>달의 바다</b>라고 해요. 실제로 물은 없어요.',log:'어둡고 매끈해 보이는 곳을 찾았다. 달의 바다라고 한다.'},
- {id:'sea2',lat:32.8,lon:-15.6,ans:0,name:'어두운 곳 2',term:'달의 바다',say:'여기도 <b>달의 바다</b>예요. 달 앞면에는 달의 바다가 여러 곳 있어요.',log:'달의 바다를 한 곳 더 찾았다.'},
- {id:'cr1',lat:-43.3,lon:-11.4,ans:2,name:'움푹 파인 곳 1',term:'충돌 구덩이',say:'둥글게 움푹 파인 곳을 <b>충돌 구덩이</b>라고 해요.',log:'둥글게 움푹 파인 충돌 구덩이를 찾았다.'},
+ {id:'sea1',lat:8.5,lon:31.4,ans:0,name:'어두운 곳 1',term:'달의 바다',say:'달 표면의 어두운 곳을 <b>달의 바다</b>라고 해요. 실제로 물은 없어요.',log:'어둡고 매끈해 보이는 곳을 찾았다. 달의 바다라고 한다.',img:'assets/spot_sea1.jpg'},
+ {id:'sea2',lat:32.8,lon:-15.6,ans:0,name:'어두운 곳 2',term:'달의 바다',say:'여기도 <b>달의 바다</b>예요. 달 앞면에는 달의 바다가 여러 곳 있어요.',log:'달의 바다를 한 곳 더 찾았다.',img:'assets/spot_sea2.jpg'},
+ {id:'cr1',lat:-43.3,lon:-11.4,ans:2,name:'움푹 파인 곳 1',term:'충돌 구덩이',say:'둥글게 움푹 파인 곳을 <b>충돌 구덩이</b>라고 해요.',log:'둥글게 움푹 파인 충돌 구덩이를 찾았다.',img:'assets/spot_cr1.jpg'},
  {id:'cr2',lat:9.6,lon:-20.1,ans:2,name:'움푹 파인 곳 2',term:'충돌 구덩이',say:'<b>충돌 구덩이</b>는 크기가 여러 가지예요. 주변에서 작은 구덩이도 찾아봐요.',log:'크고 작은 충돌 구덩이가 많다는 것을 보았다.',img:'assets/tb_crater.jpg'},
  {id:'hi',lat:-22,lon:22,ans:1,name:'밝은 곳',term:'밝고 울퉁불퉁한 곳',say:'달 표면에는 <b>밝은 곳</b>도 있어요. 표면이 <b>울퉁불퉁</b>하고 구덩이가 많이 보여요.',log:'밝고 울퉁불퉁한 곳을 찾았다.',img:'assets/tb_surface.jpg'},
  {id:'far',lat:-4,lon:-157.4,far:true,name:'달의 뒷면',term:'달의 뒷면',q:'달의 뒷면은 앞면과 무엇이 다른가요?',opts:['어두운 곳이 거의 없고 충돌 구덩이가 많아요.','어두운 곳이 앞면보다 훨씬 넓어요.','표면이 매끈매끈해요.'],ans:0,say:'탐사선이 찍어 온 <b>달의 뒷면</b>이에요. 뒷면도 단단한 땅이고, 충돌 구덩이가 아주 많아요.',log:'탐사선이 찍은 달의 뒷면에는 어두운 곳이 거의 없고 충돌 구덩이가 많았다.',img:'assets/tb_frontback.jpg'}
@@ -541,7 +552,7 @@ const chip=on=>{chipOn=on;const c=$('#viewChip');c.classList.toggle('show',on);c
 const side=$('#side');
 const setSide=html=>{side.innerHTML=html||'';side.scrollTop=0};
 function go(stage,keep){S.stage=stage;if(!keep)save();
-  $$('.full').forEach(f=>f.classList.remove('show'));$('#draw').classList.remove('show');$('#lander').style.display='none';
+  $$('.full').forEach(f=>f.classList.remove('show'));$('#draw').classList.remove('show');$('#draw').style.pointerEvents='';$('#lander').style.display='none';
   T.off();chip(false);hand(null);frameHook=null;onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';$('#flip').classList.remove('pulse');setSide('');inst('01','');
   document.body.dataset.mode=MODE[stage];
   $('#viewChip').classList.remove('show');if(stage!=='intro')snd('page');
@@ -582,7 +593,7 @@ function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0
    else if(farOpen)inst('02','<b>뒷면</b> 단추를 누르고, 달의 뒷면에서 반짝이는 곳을 눌러 주세요.');
    else inst('01','<b>반짝이는 곳</b>을 눌러 가까이 살펴봐 주세요.')};
   const ask=o=>{fly(o.lon,o.lat,2.15);list(o);inst('02','가까이 본 모습을 살펴보고, <b>알맞은 것</b>을 골라 주세요.');const q=$('#spotQ');const opts=o.opts||Q3;
-   q.innerHTML=`<h3>${esc(o.q||'가까이 본 이곳은 어떻게 보이나요?')}</h3>${o.img?`<img src="${o.img}" alt="교과서 사진" style="width:100%;max-height:24vh;object-fit:cover;border-radius:14px;margin:8px 0 2px;display:block">`:''}<div class="opts" style="margin-top:8px"></div><div id="spotFb" style="margin-top:10px;display:flex;flex-direction:column;gap:10px"></div>`;
+   q.innerHTML=`<h3>${esc(o.q||'가까이 본 이곳은 어떻게 보이나요?')}</h3>${o.img?`<img src="${o.img}" alt="가까이 본 달 표면 사진" style="width:100%;max-height:24vh;object-fit:cover;border-radius:14px;margin:8px 0 2px;display:block">`:''}<div class="opts" style="margin-top:8px"></div><div id="spotFb" style="margin-top:10px;display:flex;flex-direction:column;gap:10px"></div>`;
    opts.forEach((t,i)=>{const b=el('button','opt',esc(t));b.onclick=()=>{if(i===o.ans){b.classList.add('ok');const first=!S.found[o.id];S.found[o.id]=true;save();
       $('#spotFb').innerHTML=`<p class="fb">${o.say}</p><div class="row">${T.has(o.id)?'<button class="btn pulse" id="spotDown">표면 가까이 내려가 보기</button>':''}<button class="btn ${T.has(o.id)?'line':''}" id="spotBack">계속 관찰하기</button></div>`;
       $('#spotBack').onclick=()=>{fly(V.t.az,V.t.el,4.0);list()};if(T.has(o.id))$('#spotDown').onclick=()=>down(o);side.scrollTop=side.scrollHeight;
@@ -616,24 +627,40 @@ function sWrap(){$('#wrap').classList.add('show');const blanks=$$('#wrap .blank'
 /* 창의 활동 A */
 let strokes=[],pen='#ffe08a';
 function redraw(){const c=$('#draw'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.lineCap=x.lineJoin='round';for(const s of strokes){x.strokeStyle=s.c;x.lineWidth=6;x.beginPath();s.p.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke()}}
+// 예시: 옛날 사람들이 달의 어두운 곳에서 떠올린 방아 찧는 토끼. 달 위의 위치(위도, 경도)로 적어 두고 화면에 옮겨 그림
+const RABBIT=(()=>{const ell=(la,lo,ra,ro,rot=0,n=28)=>[...Array(n+1)].map((_,i)=>{const t=i/n*6.2832,c=Math.cos(rot*D2R),k=Math.sin(rot*D2R),x=ro*Math.cos(t),y=ra*Math.sin(t);return[la+x*k+y*c,lo+x*c-y*k]});
+  return[ell(27,-8,15,30,8),      // 몸통
+    ell(11,31,10,10),             // 머리
+    ell(-6,48,6,12,-48),          // 귀 1
+    ell(-12,33,5,10,-78),         // 귀 2
+    [[16,-22],[4,-21],[-10,-19]], // 방아 공이를 든 팔
+    [[-14,-30],[-24,-27],[-27,-17],[-23,-7],[-13,-6]], // 절구
+    [[12.5,33.5],[12.6,34.2]]]})();  // 눈
+function drawExample(){const c=$('#draw'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.lineCap=x.lineJoin='round';x.strokeStyle='#ffe08a';x.lineWidth=5;x.setLineDash([2,11]);
+  for(const sh of RABBIT){x.beginPath();sh.forEach((q,i)=>{const p=screenOf(ll(q[0],q[1],1.0));i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y)});x.stroke()}x.setLineDash([])}
 function sActA(){V.sunMode='flat';fly(0,0,4.2);strokes=[];const d=$('#draw');d.classList.add('show');redraw();
-  setSide(`<span class="eyebrow">창의 활동</span><h2>달 무늬에서 무엇이 보이나요?</h2>
+  let ex=!S.draw;   // 처음에는 예시를 먼저 보여 줌
+  const paint=()=>{setSide(`<span class="eyebrow">창의 활동</span><h2>달 무늬에서 무엇이 보이나요?</h2>
    <p>달의 <b>어두운 곳</b>을 잘 보면 무늬처럼 보여요. 옛날 우리나라 사람들은 방아 찧는 토끼를 떠올렸어요.</p>
+   ${ex?`<p class="fb"><b>예시</b> 점선은 옛날 사람들이 떠올린 <b>방아 찧는 토끼</b>예요. 나는 어떤 모양이 보이는지 생각해 보세요.</p><div class="row"><button class="btn pulse" id="aGo">내가 본 모양 그리기</button></div>`:`
    <h3>그리는 색</h3>
-   <div class="pens"><button data-c="#ffe08a" style="background:#ffe08a" class="on" aria-label="노란색"></button><button data-c="#6fe3ff" style="background:#6fe3ff" aria-label="하늘색"></button><button data-c="#ff8fb1" style="background:#ff8fb1" aria-label="분홍색"></button><button class="btn line" id="aUndo" style="min-height:42px;padding:0 14px;font-size:var(--fs-sub)">한 획 지우기</button></div>
+   <div class="pens"><button data-c="#ffe08a" style="background:#ffe08a" class="${pen==='#ffe08a'?'on':''}" aria-label="노란색"></button><button data-c="#6fe3ff" style="background:#6fe3ff" class="${pen==='#6fe3ff'?'on':''}" aria-label="하늘색"></button><button data-c="#ff8fb1" style="background:#ff8fb1" class="${pen==='#ff8fb1'?'on':''}" aria-label="분홍색"></button><button class="btn line" id="aUndo" style="min-height:42px;padding:0 14px;font-size:var(--fs-sub)">한 획 지우기</button><button class="btn line" id="aEx" style="min-height:42px;padding:0 14px;font-size:var(--fs-sub)">예시 다시 보기</button></div>
    <h3>모양의 이름</h3>
    <input type="text" id="aName" placeholder="예: 춤추는 고양이" maxlength="20" value="${esc(S.drawName)}">
    <div class="row"><button class="btn" id="aSave" disabled>일지에 붙이기</button></div>
-   <div id="aFb">${S.draw?`<p class="fb"><b>기록됨</b> 「${esc(S.drawName)}」 다시 그리면 새 그림으로 바뀌어요.</p>`:''}</div>`);
-  $$('.pens button[data-c]').forEach(b=>b.onclick=()=>{pen=b.dataset.c;$$('.pens button[data-c]').forEach(x=>x.classList.toggle('on',x===b))});
-  const steps=()=>{if(S.draw)return;if(!strokes.length)inst('01','달의 <b>어두운 곳</b>을 따라 내가 본 모양을 달 위에 그려 주세요.');else if(!$('#aName').value.trim())inst('02','<b>모양의 이름</b>을 써 주세요.');else inst('03','<b>일지에 붙이기</b>를 눌러 주세요.')};
+   <div id="aFb">${S.draw?`<p class="fb"><b>기록됨</b> 「${esc(S.drawName)}」 다시 그리면 새 그림으로 바뀌어요.</p>`:''}</div>`}`);
+   if(ex){frameHook=drawExample;d.style.pointerEvents='none';hand(null);inst('01','점선으로 그린 <b>방아 찧는 토끼</b>를 살펴본 뒤, <b>내가 본 모양 그리기</b>를 눌러 주세요.');$('#aGo').onclick=()=>{ex=false;paint()};return}
+   frameHook=null;d.style.pointerEvents='';redraw();
+   $$('.pens button[data-c]').forEach(b=>b.onclick=()=>{pen=b.dataset.c;$$('.pens button[data-c]').forEach(x=>x.classList.toggle('on',x===b))});
+   $('#aUndo').onclick=()=>{strokes.pop();redraw();ready()};$('#aEx').onclick=()=>{ex=true;paint()};$('#aName').oninput=ready;$('#aSave').onclick=saveDraw;
+   ready();if(S.draw){inst('✓','그림을 일지에 붙였어요. 다시 그려도 좋아요.');allow(true,'다음')}else if(!strokes.length)hand('drag')};
+  const steps=()=>{if(S.draw)return;if(!strokes.length)inst('02','토끼 말고 <b>내가 본 모양</b>을 달의 어두운 곳을 따라 그려 주세요.');else if(!$('#aName').value.trim())inst('03','<b>모양의 이름</b>을 써 주세요.');else inst('04','<b>일지에 붙이기</b>를 눌러 주세요.')};
   const ready=()=>{const ok=strokes.length&&$('#aName').value.trim();$('#aSave').disabled=!ok;$('#aSave').classList.toggle('pulse',!!ok&&!S.draw);steps()};
-  $('#aUndo').onclick=()=>{strokes.pop();redraw();ready()};$('#aName').oninput=ready;
   const P=e=>{const r=SR();return[e.clientX-r.x,e.clientY-r.y]};
   let cur=null;d.onpointerdown=e=>{d.setPointerCapture(e.pointerId);cur={c:pen,p:[P(e)]};strokes.push(cur);hand(null)};
-  d.onpointermove=e=>{if(!cur)return;cur.p.push(P(e));redraw()};d.onpointerup=d.onpointercancel=()=>{cur=null;ready()};
-  $('#aSave').onclick=()=>{const r=SR(),sz=Math.min(r.h*.92,r.w*.92),sx=(r.w-sz)/2,sy=(r.h-sz)/2;const o=document.createElement('canvas');o.width=o.height=480;const x=o.getContext('2d');const pr=canvas.width/r.w;renderer.render(scene,camera);x.drawImage(canvas,sx*pr,sy*pr,sz*pr,sz*pr,0,0,480,480);const dr=$('#draw'),dp=dr.width/r.w;x.drawImage(dr,sx*dp,sy*dp,sz*dp,sz*dp,0,0,480,480);S.draw=o.toDataURL('image/jpeg',.85);S.drawName=$('#aName').value.trim();save();toast('일지에 붙였어요.','note');$('#aSave').classList.remove('pulse');$('#aFb').innerHTML='<p class="fb"><b>기록됨</b> 「'+esc(S.drawName)+'」 친구가 본 모양과 비교해 봐요.</p>';side.scrollTop=side.scrollHeight;inst('✓','일지에 붙였어요. <b>다음</b>을 눌러 주세요.');allow(true,'다음')};
-  if(S.draw){inst('✓','그림을 일지에 붙였어요. 다시 그려도 좋아요.');allow(true,'다음')}else{steps();hand('drag')}}
+  d.onpointermove=e=>{if(!cur)return;cur.p.push(P(e));redraw()};d.onpointerup=d.onpointercancel=()=>{cur=null;if(!ex)ready()};
+  const saveDraw=()=>{const r=SR(),sz=Math.min(r.h*.92,r.w*.92),sx=(r.w-sz)/2,sy=(r.h-sz)/2;const o=document.createElement('canvas');o.width=o.height=480;const x=o.getContext('2d');const pr=canvas.width/r.w;renderer.render(scene,camera);x.drawImage(canvas,sx*pr,sy*pr,sz*pr,sz*pr,0,0,480,480);const dr=$('#draw'),dp=dr.width/r.w;x.drawImage(dr,sx*dp,sy*dp,sz*dp,sz*dp,0,0,480,480);S.draw=o.toDataURL('image/jpeg',.85);S.drawName=$('#aName').value.trim();save();toast('일지에 붙였어요.','note');$('#aSave').classList.remove('pulse');$('#aFb').innerHTML='<p class="fb"><b>기록됨</b> 「'+esc(S.drawName)+'」 친구가 본 모양과 비교해 봐요.</p>';side.scrollTop=side.scrollHeight;inst('✓','일지에 붙였어요. <b>다음</b>을 눌러 주세요.');allow(true,'다음')};
+  paint()}
 
 function sMore(){$('#more').classList.add('show');$('#pickC').classList.toggle('done',!!S.site);$('#pickB').classList.toggle('done',S.bDone);$('#pickC').onclick=()=>go('actC');$('#pickB').onclick=()=>go('actB');allow(true,'마무리하기');nextBtn.classList.remove('pulse')}
 

@@ -14,5 +14,6 @@
 - `assets/tb_*.jpg`, `video/help.mp4`: 동아출판 2022 개정 초등 과학 4-2 교과서·지도서 자료. 검토 목적으로만 포함. 재배포 금지
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png`: 생성형 그림 도구로 제작
 - 글꼴: 잘난체(여기어때컴퍼니), G마켓 산스(G마켓). 동아 샘플에 들어 있던 파일을 그대로 가져옴. 납품 전 각 글꼴의 사용 조건 확인 필요
+- `assets/spot_sea1.jpg`, `spot_sea2.jpg`, `spot_cr1.jpg`: NASA CGI Moon Kit 색 지도를 잘라 음영을 더한 것(`tools/build_spot_photos.py`)
 - `assets/ic_start.png`, `ic_journal.png`, `ic_prep.png`, `ic_video.png`, `prep_tablet.png`: 생성형 그림 도구로 제작(2026-11-22). 동아 샘플 아이콘의 그림체를 글로 옮겨 요청함
 - three.js r160 (MIT)

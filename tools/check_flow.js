@@ -32,7 +32,7 @@ await p.locator('#spotQ .opt').nth(0).click();await p.click('#spotBack');await s
 await p.click('#bNext');await shot('wrap');
 for(const w of ['둥근 공','어두운 곳','울퉁불퉁한','충돌 구덩이','달의 바다']){if(w==='울퉁불퉁한'){await p.locator('#bank button',{hasText:'매끈매끈한'}).click();await shot('wrap_wrong',250)}await p.locator('#bank button',{hasText:w}).click();await p.waitForTimeout(150)}
 await shot('wrap_result',1200);await p.click('#resOk');await shot('wrap_done');
-await p.click('#bNext');await shot('actA',2500);
+await p.click('#bNext');await shot('actA_example',2500);await p.click('#aGo');await shot('actA',600);
 r=await p.evaluate(()=>SR());await p.mouse.move(r.x+r.w/2-60,r.y+r.h/2-40);await p.mouse.down();await p.mouse.move(r.x+r.w/2+40,r.y+r.h/2-80,{steps:6});await p.mouse.move(r.x+r.w/2+60,r.y+r.h/2+50,{steps:6});await p.mouse.up();
 await p.fill('#aName','춤추는 고양이');await shot('actA_ready',400);
 await p.click('#aSave');await shot('actA_saved');
