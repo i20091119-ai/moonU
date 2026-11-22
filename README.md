@@ -13,5 +13,6 @@
 - 달 색 지도·높이 지도, 지형 조각(`assets/moon_terrain.js`, 높이 64픽셀/도·색 원본에서 관찰 지점 6곳을 잘라 냄): NASA's Scientific Visualization Studio, CGI Moon Kit (https://svs.gsfc.nasa.gov/4720)
 - `assets/tb_*.jpg`, `video/help.mp4`: 동아출판 2022 개정 초등 과학 4-2 교과서·지도서 자료. 검토 목적으로만 포함. 재배포 금지
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png`: 생성형 그림 도구로 제작
-- 글꼴: Jua, Gowun Dodum (SIL Open Font License)
+- 글꼴: 잘난체(여기어때컴퍼니), G마켓 산스(G마켓). 동아 샘플에 들어 있던 파일을 그대로 가져옴. 납품 전 각 글꼴의 사용 조건 확인 필요
+- `assets/dg_it_*.webp`: 동아 확정 샘플(실험관찰+가상실험실)의 아이콘. 검토 목적으로만 포함
 - three.js r160 (MIT)
