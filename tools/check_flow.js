@@ -20,15 +20,16 @@ await shot('shape3');
 await p.locator('#shapeOpts .opt').nth(0).click();await shot('shape_wrong',400);
 await p.locator('#shapeOpts .opt').nth(1).click();await shot('shape_ok',600);
 await p.click('#bNext');await shot('surface',2500);
-const spots=[[8.5,31.4,0],[32.8,-15.6,0],[-43.3,-11.4,2],[9.6,-20.1,2],[-22,22,1]];
-for(let i=0;i<spots.length;i++){const [la,lo,a]=spots[i];await p.evaluate(()=>{V.t.az=0;V.t.el=0;V.t.dist=4.3});await p.waitForTimeout(1800);const q=await stageXY(la,lo);await p.mouse.click(q.x,q.y);await p.waitForTimeout(1600);
-  if(i===3){await shot('surface_ask',200);await p.locator('#spotQ .opt').nth(0).click();await shot('surface_wrong',300)}
-  await p.locator('#spotQ .opt').nth(a).click();
-  if(i===3){await shot('surface_right',500);await p.click('#spotDown');await shot('terrain',3200);await p.click('#spotUp');await p.waitForTimeout(1500)}
-  else await p.click('#spotBack');}
-await shot('surface_front_done',1200);
-await p.click('#flip');await p.waitForTimeout(2500);const q=await stageXY(-4,-157.4);await p.mouse.click(q.x,q.y);await p.waitForTimeout(1500);
-await p.locator('#spotQ .opt').nth(0).click();await p.click('#spotBack');await shot('surface_all');
+// 관찰 2: 임무 4개를 찾아서 찍기. 시점은 직접 맞춰 줌
+const aim=async(lon,lat,dist)=>{await p.evaluate(([lon,lat,dist])=>{V.t.az=lon;V.t.el=lat;V.t.dist=dist},[lon,lat,dist]);await p.waitForTimeout(2200)};
+await p.click('#shoot');await shot('surface_far',400);await aim(-30,-70,3.2);await p.click('#shoot');await shot('surface_miss',400);          // 어두운 곳이 아닌 데를 찍어 봄
+await aim(31.4,8.5,3.0);await p.click('#shoot');await shot('surface_m1',1100);
+await p.click('#spotDown');await shot('terrain',3200);await p.click('#spotUp');await p.waitForTimeout(1500);
+await p.click('#spotNext');await aim(22,-22,3.0);await p.click('#shoot');await shot('surface_m2',1100);
+await p.click('#spotNext');await aim(-20.1,9.6,2.4);await shot('surface_m3_aim',200);await p.click('#shoot');await shot('surface_m3',1100);
+await p.click('#spotNext');await shot('surface_m4',600);await p.click('#flip');await p.waitForTimeout(2600);await p.click('#shoot');await shot('surface_m4_ask',1100);
+await p.locator('#farOpts .opt').nth(1).click();await p.waitForTimeout(250);await p.locator('#farOpts .opt').nth(0).click();await shot('surface_m4_done',700);
+await p.click('#spotNext');await shot('surface_all',600);
 await p.click('#bNext');await shot('wrap');
 for(const w of ['둥근 공','어두운 곳','울퉁불퉁한','충돌 구덩이','달의 바다']){if(w==='울퉁불퉁한'){await p.locator('#bank button',{hasText:'매끈매끈한'}).click();await shot('wrap_wrong',250)}await p.locator('#bank button',{hasText:w}).click();await p.waitForTimeout(150)}
 await shot('wrap_result',1200);await p.click('#resOk');await shot('wrap_done');
@@ -55,7 +56,7 @@ for(const i of [0,4,8])await p.locator('.face').nth(i).click();
 await shot('finish_popup',1200);await p.click('#popX');await shot('finish_done',500);
 await p.click('#bJournal');await shot('pop_journal');await p.click('#popX');
 await p.click('#bPrep');await shot('pop_prep');await p.click('#popX');
-await p.locator('.tab').nth(2).click();await shot('tab_jump',1500);await p.click('#reset');await shot('reset',800);const afterReset=await p.evaluate(()=>Object.keys(__moon.S().found).length);await p.locator('.tab').nth(6).click();await p.waitForTimeout(500);
+await p.locator('.tab').nth(2).click();await shot('tab_jump',1500);await p.click('#reset');await shot('reset',800);const afterReset=await p.evaluate(()=>Object.keys(__moon.S().shots).length);await p.locator('.tab').nth(6).click();await p.waitForTimeout(500);
 await p.click('#bSnd');const sndOff=await p.evaluate(()=>document.querySelector('#bSnd').classList.contains('off'));await p.click('#bSnd');
 await p.click('#bHomeTop');await shot('intro_resume',600);
 const resume=await p.evaluate(()=>getComputedStyle(document.querySelector('#bResume')).display);
