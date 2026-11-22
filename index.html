@@ -120,6 +120,8 @@ textarea{min-height:74px;resize:none}
 #tip.show{display:block}
 #zoom{position:fixed;left:18px;top:70px;z-index:14;display:none;flex-direction:column;gap:8px}
 #zoom.show{display:flex}
+#fade{position:fixed;inset:0;background:#02030a;z-index:13;opacity:0;pointer-events:none;transition:opacity .35s}
+#fade.on{opacity:1;pointer-events:auto}
 #lander{position:fixed;z-index:13;width:110px;pointer-events:none;display:none;transform:translate(-50%,-100%)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,213,74,.9)}100%{box-shadow:0 0 0 18px rgba(255,213,74,0)}}
 @keyframes dragx{0%,100%{transform:translateX(-70px)}50%{transform:translateX(70px)}}
@@ -133,6 +135,7 @@ textarea{min-height:74px;resize:none}
 <div id="bg"></div>
 <canvas id="draw"></canvas>
 <img id="lander" src="assets/lander.png" alt="">
+<div id="fade"></div>
 <div id="hand"></div>
 <div id="tip"></div>
 <div id="zoom"><button class="ibtn" id="zin" aria-label="크게 보기">크게</button><button class="ibtn" id="zout" aria-label="작게 보기">작게</button><button class="ibtn" id="flip" aria-label="뒷면 보기" style="display:none">뒷면</button></div>
@@ -219,6 +222,7 @@ textarea{min-height:74px;resize:none}
 
 <script src="lib/three.min.js"></script>
 <script src="assets/moon_tex.js"></script>
+<script src="assets/moon_terrain.js"></script>
 <script>
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -244,6 +248,12 @@ const SPOTS=[
  {id:'hi',lat:-22,lon:22,ans:1,name:'밝은 곳',term:'밝고 울퉁불퉁한 곳',say:'달 표면에는 <b>밝은 곳</b>도 있어요. 표면이 <b>울퉁불퉁</b>하고 구덩이가 많이 보여요.',log:'밝고 울퉁불퉁한 곳을 찾았다.',img:'assets/tb_surface.jpg'},
  {id:'far',lat:-4,lon:-157.4,far:true,name:'달의 뒷면',term:'달의 뒷면',q:'달의 뒷면은 앞면과 무엇이 다른가요?',opts:['어두운 곳이 거의 없고 충돌 구덩이가 많아요.','어두운 곳이 앞면보다 훨씬 넓어요.','표면이 매끈매끈해요.'],ans:0,say:'탐사선이 찍어 온 <b>달의 뒷면</b>이에요. 뒷면도 단단한 땅이고, 충돌 구덩이가 아주 많아요.',log:'탐사선이 찍은 달의 뒷면에는 어두운 곳이 거의 없고 충돌 구덩이가 많았다.',img:'assets/tb_frontback.jpg'}
 ];
+const NEAR={sea1:'<b>달의 바다</b>를 가까이에서 본 모습이에요. 물은 없고 단단한 땅이에요. 넓고 매끈해 보이지만 작은 충돌 구덩이도 있어요.',
+ sea2:'여기도 <b>달의 바다</b>예요. 매끈해 보이는 땅에서 작은 충돌 구덩이를 찾아봐요.',
+ cr1:'<b>충돌 구덩이</b>를 가까이에서 본 모습이에요. 둥글게 움푹 파여 있어요. 주변의 다른 구덩이도 찾아봐요.',
+ cr2:'<b>충돌 구덩이</b>를 가까이에서 본 모습이에요. 둥글게 움푹 파여 있어요. 주변의 작은 구덩이도 찾아봐요.',
+ hi:'<b>밝은 곳</b>을 가까이에서 본 모습이에요. 크고 작은 충돌 구덩이가 많아서 <b>울퉁불퉁</b>해요.',
+ far:'탐사선이 찍어 온 <b>달의 뒷면</b>을 가까이에서 본 모습이에요. 뒷면도 단단한 땅이고, 충돌 구덩이가 아주 많아요.'};
 const SITES=[
  {id:'가',lat:8.5,lon:31.4,desc:'어두운 곳(달의 바다)'},
  {id:'나',lat:-40,lon:8,desc:'밝고 울퉁불퉁한 곳'},
@@ -285,9 +295,9 @@ scene.add(new THREE.AmbientLight(0xffffff,0.10));
 // 별
 {const g=new THREE.BufferGeometry(),n=900,p=new Float32Array(n*3);for(let i=0;i<n;i++){const u=Math.random()*2-1,a=Math.random()*6.283,r=Math.sqrt(1-u*u);p[i*3]=40*r*Math.cos(a);p[i*3+1]=40*u;p[i*3+2]=40*r*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xffffff,size:0.12,sizeAttenuation:true,transparent:true,opacity:.8})))}
 const ll=(lat,lon,r=1)=>new THREE.Vector3(r*Math.cos(lat*D2R)*Math.cos(lon*D2R),r*Math.sin(lat*D2R),-r*Math.cos(lat*D2R)*Math.sin(lon*D2R));
-const V={az:0,el:0,dist:9,t:{az:0,el:0,dist:9},free:false,minD:2.0,maxD:5.2,sunMode:'side',offX:0};
+const V={az:0,el:0,dist:9,t:{az:0,el:0,dist:9},free:false,minD:2.0,maxD:5.2,elMin:-80,elMax:80,sunMode:'side',offX:0};
 function glRect(){const w=innerWidth,h=innerHeight;const side=!$('#side').classList.contains('hide')&&w>820?Math.min(380,w*.36)+28:0;return{w,h,cx:(w-side)/2,cy:h/2,side}}
-function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;const r=glRect();camera.setViewOffset(w,h,r.side/2,0,w,h);camera.updateProjectionMatrix();const d=$('#draw');d.width=w;d.height=h;redraw()}
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;const r=glRect();camera.setViewOffset(w,h,r.side/2,0,w,h);camera.updateProjectionMatrix();T.cam.aspect=w/h;T.cam.setViewOffset(w,h,r.side/2,0,w,h);T.cam.updateProjectionMatrix();const d=$('#draw');d.width=w;d.height=h;redraw()}
 addEventListener('resize',resize);
 function fly(az,el,dist){V.t.az=az;V.t.el=el;if(dist)V.t.dist=dist}
 const sprites=[];
@@ -296,16 +306,59 @@ function addSprite(o,color,label,group){const m=new THREE.SpriteMaterial({map:ri
 SPOTS.forEach(o=>addSprite(o,'#ffd54a',null,'spot'));
 SITES.forEach(o=>addSprite(o,'#35c2b0',o.id,'site'));
 const showGroup=g=>sprites.forEach(s=>s.userData.vis=(s.userData.group===g));
+/* ---------- 3D 지형 (달 표면 가까이 보기) ---------- */
+// 높이는 NASA 자료 그대로이고, 화면에서는 높낮이를 EX배로 크게 나타냄. 해는 고정이라 음영·그림자를 그림에 미리 구워 넣음
+const T=(()=>{const EX=2,G=257,U_SIZE=10,SUN_EL=20*D2R,SUN=[-.85,-.53];// SUN: 해가 있는 쪽(동, 남). 북서쪽
+  const sc=new THREE.Scene();sc.background=new THREE.Color(0x02030a);
+  const cam=new THREE.PerspectiveCamera(40,1,.05,300);
+  {const g=new THREE.BufferGeometry(),n=700,p=new Float32Array(n*3);for(let i=0;i<n;i++){const u=Math.random(),a=Math.random()*6.283,r=Math.sqrt(1-u*u);p[i*3]=120*r*Math.cos(a);p[i*3+1]=120*u;p[i*3+2]=120*r*Math.sin(a)}g.setAttribute('position',new THREE.BufferAttribute(p,3));sc.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xffffff,size:.5,sizeAttenuation:true,transparent:true,opacity:.75})))}
+  const v={az:200,el:30,dist:8,t:{az:200,el:30,dist:8},free:true,minD:3.2,maxD:11,elMin:10,elMax:70};
+  let mesh=null,cur=null;
+  const decode=d=>{const b=atob(d.h),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);const q=new Uint16Array(u.buffer),h=new Float32Array(q.length),k=d.range*EX/65535;for(let i=0;i<q.length;i++)h[i]=q[i]*k;return h};
+  function shade(h,N,px){// 램버트 음영 × 드리운 그림자, 0~1
+    const out=new Float32Array(N*N),te=Math.tan(SUN_EL),se=Math.sin(SUN_EL),ce=Math.cos(SUN_EL);let top=0;for(let i=0;i<h.length;i++)if(h[i]>top)top=h[i];
+    const sl=Math.hypot(SUN[0],SUN[1]),sx=SUN[0]/sl,sz=SUN[1]/sl;
+    for(let r=0;r<N;r++)for(let c=0;c<N;c++){const i=r*N+c,c0=c>0?c-1:c,c1=c<N-1?c+1:c,r0=r>0?r-1:r,r1=r<N-1?r+1:r;
+      const gx=(h[r*N+c1]-h[r*N+c0])/((c1-c0)*px),gz=(h[r1*N+c]-h[r0*N+c])/((r1-r0)*px);
+      let lam=(-gx*ce*sx+se-gz*ce*sz)/Math.sqrt(gx*gx+1+gz*gz);if(lam<=0){out[i]=0;continue}
+      let occ=0;for(let t=1.5;t<160;t+=1.5){const x=c+sx*t,y=r+sz*t;if(x<0||y<0||x>N-1||y>N-1)break;const ray=h[i]+t*px*te;if(ray>top)break;const d=(h[(y|0)*N+(x|0)]-ray)/(t*px);if(d>occ){occ=d;if(occ>.08)break}}
+      out[i]=lam*(1-Math.min(1,occ/.08))}
+    return out}
+  function build(d,img){const N=d.n,h=decode(d),px=d.size*1000/N,sh=shade(h,N,px),U=U_SIZE/d.size;
+    // 그림: 색 지도 × 음영
+    const W=1024,cv=document.createElement('canvas');cv.width=cv.height=W;const x=cv.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,W,W);const im=x.getImageData(0,0,W,W),p=im.data,f=(N-1)/(W-1);
+    for(let r=0;r<W;r++){const fy=r*f,y0=Math.min(N-2,fy|0),ty=fy-y0;for(let c=0;c<W;c++){const fx=c*f,x0=Math.min(N-2,fx|0),tx=fx-x0,a=y0*N+x0;
+      const L=(sh[a]*(1-tx)+sh[a+1]*tx)*(1-ty)+(sh[a+N]*(1-tx)+sh[a+N+1]*tx)*ty;
+      const dx=(c/(W-1)-.5)*2,dy=(r/(W-1)-.5)*2,rr=Math.sqrt(dx*dx+dy*dy);const edge=rr<.8?1:Math.max(0,1-(rr-.8)/.19);
+      const k=(.05+2.5*L/(1+.75*L))*edge,o=(r*W+c)*4;p[o]=Math.min(255,p[o]*k);p[o+1]=Math.min(255,p[o+1]*k);p[o+2]=Math.min(255,p[o+2]*k);p[o+3]=rr<.985?255:0}}
+    x.putImageData(im,0,0);const tex=new THREE.CanvasTexture(cv);if('colorSpace' in tex)tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=8;
+    // 메시
+    const pos=new Float32Array(G*G*3),uv=new Float32Array(G*G*2),idx=new Uint32Array((G-1)*(G-1)*6),hc=h[(N>>1)*N+(N>>1)],s=(N-1)/(G-1);
+    for(let r=0;r<G;r++)for(let c=0;c<G;c++){const i=r*G+c,hr=Math.min(N-1,Math.round(r*s)),hcn=Math.min(N-1,Math.round(c*s));const xk=(c/(G-1)-.5)*d.size,zk=(r/(G-1)-.5)*d.size;
+      pos[i*3]=xk*U;pos[i*3+2]=zk*U;pos[i*3+1]=((h[hr*N+hcn]-hc)/1000-(xk*xk+zk*zk)/(2*1737.4))*U;uv[i*2]=c/(G-1);uv[i*2+1]=1-r/(G-1)}
+    let k=0;for(let r=0;r<G-1;r++)for(let c=0;c<G-1;c++){const a=r*G+c,b=a+1,e=a+G,g2=e+1;idx[k++]=a;idx[k++]=e;idx[k++]=b;idx[k++]=b;idx[k++]=e;idx[k++]=g2}
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));geo.setIndex(new THREE.BufferAttribute(idx,1));
+    return new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:tex,alphaTest:.5}))}
+  const clear=()=>{if(mesh){sc.remove(mesh);mesh.geometry.dispose();mesh.material.map.dispose();mesh.material.dispose();mesh=null}};
+  const api={on:false,v,cam,has:id=>!!(window.MOON_TERRAIN&&window.MOON_TERRAIN[id]),
+    enter(id,done){const d=window.MOON_TERRAIN[id],fd=$('#fade');fd.classList.add('on');const img=new Image();
+      img.onload=()=>setTimeout(()=>{clear();mesh=build(d,img);sc.add(mesh);cur=id;v.az=v.t.az=205;v.el=62;v.dist=13;v.t.el=28;v.t.dist=8;api.on=true;fd.classList.remove('on');if(done)done()},360);
+      img.onerror=()=>{fd.classList.remove('on');toast('지형 자료를 불러오지 못했어요.')};img.src=d.c},
+    exit(done){if(!api.on){if(done)done();return}const fd=$('#fade');fd.classList.add('on');setTimeout(()=>{api.on=false;clear();fd.classList.remove('on');if(done)done()},360)},
+    off(){api.on=false;clear();$('#fade').classList.remove('on')},
+    frame(k){v.az+=(v.t.az-v.az)*k*.6;v.el+=(v.t.el-v.el)*k*.6;v.dist+=(v.t.dist-v.dist)*k*.6;const e=v.el*D2R,a=v.az*D2R;cam.position.set(v.dist*Math.cos(e)*Math.sin(a),v.dist*Math.sin(e),v.dist*Math.cos(e)*Math.cos(a));cam.lookAt(0,0,0);renderer.render(sc,cam)}};
+  return api})();
 // 조작
 let drag=null,moved=0;const ptrs=new Map();let pinch0=0;
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY};moved=0;if(ptrs.size===2){const p=[...ptrs.values()];pinch0=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1])}});
-canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);if(!V.free)return;
-  if(ptrs.size===2){const p=[...ptrs.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);if(pinch0){V.t.dist=Math.max(V.minD,Math.min(V.maxD,V.t.dist*pinch0/d));pinch0=d}return}
-  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};moved+=Math.abs(dx)+Math.abs(dy);const k=.22*(V.dist-1)/3.2+.04;V.t.az-=dx*k;V.t.el=Math.max(-80,Math.min(80,V.t.el+dy*k));V.az=V.t.az;V.el=V.t.el;onDrag(Math.abs(dx)+Math.abs(dy))});
-const up=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);pinch0=0;if(moved<8)onTap(e.clientX,e.clientY)};
+canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);const C=T.on?T.v:V;if(!C.free)return;
+  if(ptrs.size===2){const p=[...ptrs.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);if(pinch0){C.t.dist=Math.max(C.minD,Math.min(C.maxD,C.t.dist*pinch0/d));pinch0=d}return}
+  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};moved+=Math.abs(dx)+Math.abs(dy);const k=T.on?.25:.22*(V.dist-1)/3.2+.04;C.t.az-=dx*k;C.t.el=Math.max(C.elMin,Math.min(C.elMax,C.t.el+dy*k));C.az=C.t.az;C.el=C.t.el;onDrag(Math.abs(dx)+Math.abs(dy))});
+const up=e=>{if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);pinch0=0;if(moved<8&&!T.on)onTap(e.clientX,e.clientY)};
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',e=>ptrs.delete(e.pointerId));
-canvas.addEventListener('wheel',e=>{if(!V.free)return;V.t.dist=Math.max(V.minD,Math.min(V.maxD,V.t.dist*(e.deltaY>0?1.1:.9)))},{passive:true});
-$('#zin').onclick=()=>V.t.dist=Math.max(V.minD,V.t.dist*.8);$('#zout').onclick=()=>V.t.dist=Math.min(V.maxD,V.t.dist*1.25);
+const zoomBy=f=>{const C=T.on?T.v:V;C.t.dist=Math.max(C.minD,Math.min(C.maxD,C.t.dist*f))};
+canvas.addEventListener('wheel',e=>{if(!(T.on?T.v:V).free)return;zoomBy(e.deltaY>0?1.1:.9)},{passive:true});
+$('#zin').onclick=()=>zoomBy(.8);$('#zout').onclick=()=>zoomBy(1.25);
 $('#flip').onclick=()=>{const back=Math.cos((V.t.az)*D2R)>0;fly(V.t.az+(back?180:-180),0,4.3);toast(back?'탐사선이 찍어 온 달의 뒷면이에요.':'지구에서 보이는 달의 앞면이에요.')};
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
 let onDrag=()=>{},onTap=()=>{};
@@ -313,6 +366,7 @@ function pickSprite(x,y){ndc.set(x/innerWidth*2-1,-(y/innerHeight*2-1));ray.setF
 function screenOf(v){const p=v.clone().project(camera);return{x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight}}
 let tPrev=0;
 function tick(t){requestAnimationFrame(tick);const dt=Math.min(.05,(t-tPrev)/1000||0);tPrev=t;const k=1-Math.pow(.002,dt);
+  if(T.on){T.frame(k);if(frameHook)frameHook();return}
   V.az+=(V.t.az-V.az)*k;V.el+=(V.t.el-V.el)*k;V.dist+=(V.t.dist-V.dist)*k;
   const cp=ll(V.el,V.az,V.dist);camera.position.copy(cp);camera.up.set(0,1,0);camera.lookAt(0,0,0);
   if(V.sunMode==='side'){sun.position.copy(ll(V.el+15,V.az+55,10))}else if(V.sunMode==='flat'){sun.position.copy(ll(V.el+4,V.az+8,10))}else{sun.position.copy(ll(V.el+22,V.az+52,10))}
@@ -326,7 +380,7 @@ const side=$('#side');
 function setSide(html){if(html==null){side.classList.add('hide')}else{side.classList.remove('hide');side.innerHTML=html}resize()}
 function go(stage){S.stage=stage;save();
   $$('.full').forEach(f=>f.classList.remove('show'));$('#draw').classList.remove('show');$('#lander').style.display='none';
-  hand(null);tip(null);frameHook=null;onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';setSide(null);
+  T.off();hand(null);tip(null);frameHook=null;onDrag=()=>{};onTap=()=>{};V.free=false;showGroup(null);$('#zoom').classList.remove('show');$('#flip').style.display='none';setSide(null);
   $('#stageName').textContent=SNAME[stage]||'';$('#stageName').style.display=SNAME[stage]?'':'none';
   $('#nav').classList.toggle('hide',stage==='intro');$('#bg').classList.toggle('off',!(stage==='intro'||stage==='predict'));
   nextBtn.style.display=(stage==='finish')?'none':'';nextBtn.textContent='다음';allow(false);
@@ -363,7 +417,14 @@ function sSurface(){V.sunMode='relief';V.free=true;V.minD=2.0;V.maxD=5.2;fly(0,0
    if(all>=6)$('#flip').classList.remove('pulse')};
   const ask=o=>{fly(o.lon,o.lat,2.15);list(o);const q=$('#spotQ');const opts=o.opts||Q3;
    q.innerHTML=`<p><b style="font-family:var(--fd);font-weight:400">${esc(o.q||'가까이 본 이곳은 어떻게 보이나요?')}</b></p>${o.img?`<img src="${o.img}" alt="교과서 사진" style="width:100%;border-radius:12px">`:''}<div class="opts"></div><div id="spotFb"></div>`;
-   opts.forEach((t,i)=>{const b=el('button','opt',esc(t));b.onclick=()=>{if(i===o.ans){b.classList.add('ok');const first=!S.found[o.id];S.found[o.id]=true;save();$('#spotFb').innerHTML=`<p class="fb">${o.say}</p><div class="row"><button class="btn teal" id="spotBack">계속 관찰하기</button></div>`;$('#spotBack').onclick=()=>{fly(V.t.az,V.t.el,4.0);list()};if(first)toast('일지에 기록했어요.');const n=foundCount(false);if(n>=6)allow(true,'정리하기')}else{b.classList.add('no');$('#spotFb').innerHTML='<p class="fb warn">화면의 달 표면을 다시 살펴봐요. 밝기와 모양을 잘 보세요.</p>'}};q.querySelector('.opts').append(b)})};
+   opts.forEach((t,i)=>{const b=el('button','opt',esc(t));b.onclick=()=>{if(i===o.ans){b.classList.add('ok');const first=!S.found[o.id];S.found[o.id]=true;save();$('#spotFb').innerHTML=`<p class="fb">${o.say}</p><div class="row">${T.has(o.id)?'<button class="btn teal pulse" id="spotDown">표면 가까이 내려가 보기</button>':''}<button class="btn ${T.has(o.id)?'ghost':'teal'}" id="spotBack">계속 관찰하기</button></div>`;$('#spotBack').onclick=()=>{fly(V.t.az,V.t.el,4.0);list()};if(T.has(o.id))$('#spotDown').onclick=()=>down(o);side.scrollTop=side.scrollHeight;if(first)toast('일지에 기록했어요.');const n=foundCount(false);if(n>=6)allow(true,'정리하기')}else{b.classList.add('no');$('#spotFb').innerHTML='<p class="fb warn">화면의 달 표면을 다시 살펴봐요. 밝기와 모양을 잘 보세요.</p>'}};q.querySelector('.opts').append(b)})};
+  const down=o=>{$('#flip').style.display='none';T.enter(o.id,()=>{
+    setSide(`<span class="tag">관찰 2</span><h2>${o.term} 가까이 보기</h2><p>${NEAR[o.id]}</p>
+     <ul class="todo"><li class="on"><span class="n">1</span><span>화면을 끌어서 둘러봐요.</span></li><li class="on"><span class="n">2</span><span>[크게] 단추나 두 손가락으로 더 가까이 봐요.</span></li></ul>
+     <p style="color:#7b7460;font-size:14px">높낮이가 잘 보이도록 실제보다 2배 높게 나타냈어요.</p>
+     <div class="row"><button class="btn teal" id="spotUp">달 전체로 돌아가기</button></div>`);
+    hand('drag');tip('화면을 끌어서 둘러봐요.');let acc=0;onDrag=d=>{acc+=d;if(acc>200){hand(null);tip(null);onDrag=()=>{}}};
+    $('#spotUp').onclick=()=>{hand(null);tip(null);onDrag=()=>{};T.exit(()=>{fly(V.t.az,V.t.el,4.0);list()})}})};
   onTap=(x,y)=>{const s=pickSprite(x,y);if(s&&s.userData.group==='spot'){hand(null);tip(null);ask(s.userData.o)}};
   list();if(foundCount(false)===0){tip('반짝이는 노란 동그라미를 눌러요.')}}
 
@@ -437,7 +498,7 @@ function sFinish(){$('#finish').classList.add('show');fly(0,0,5.2);const f=$('#f
   $('#bPrint').onclick=()=>print();$('#bMore2').onclick=()=>go('more');$('#bHome').onclick=()=>{S.stage='intro';save();go('intro')}}
 
 resize();requestAnimationFrame(tick);go('intro');
-window.__moon={go,S:()=>S,V};
+window.__moon={go,S:()=>S,V,T};
 </script>
 </body>
 </html>

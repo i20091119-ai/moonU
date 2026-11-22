@@ -10,7 +10,7 @@
 인트로 → 예상 → 관찰 1(모양) → 관찰 2(표면, 뒷면 포함) → 정리 → 창의 활동(달 무늬에서 본 모양) → 더 해 보기(착륙 지점 고르기 / 구덩이 만들기) → 스스로 평가·관찰 일지
 
 ## 자료 출처
-- 달 색 지도·높이 지도: NASA's Scientific Visualization Studio, CGI Moon Kit (https://svs.gsfc.nasa.gov/4720)
+- 달 색 지도·높이 지도, 지형 조각(`assets/moon_terrain.js`, 높이 64픽셀/도·색 원본에서 관찰 지점 6곳을 잘라 냄): NASA's Scientific Visualization Studio, CGI Moon Kit (https://svs.gsfc.nasa.gov/4720)
 - `assets/tb_*.jpg`, `video/help.mp4`: 동아출판 2022 개정 초등 과학 4-2 교과서·지도서 자료. 검토 목적으로만 포함. 재배포 금지
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png`: 생성형 그림 도구로 제작
 - 글꼴: Jua, Gowun Dodum (SIL Open Font License)

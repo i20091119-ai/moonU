@@ -40,6 +40,7 @@
 ## 파일
 - `index.html` — 전체 앱. 단계 함수: `sIntro sPredict sShape sSurface sWrap sActA sMore sActC sActB sFinish`, 전환은 `go(stage)`, 상태는 `S`
 - `assets/moon_tex.js` — NASA CGI Moon Kit 색 지도(4096×2048)·높이 지도(2048×1024). 다시 만들기: `tools/build_textures.py`
+- `assets/moon_terrain.js` — 관찰 지점 6곳의 지형 조각(높이 512×512 16비트, 색 768×768). 관찰 2에서 정답 뒤 [표면 가까이 내려가 보기]로 들어가는 3D 장면(`T` 모듈)에 씀. 높낮이 2배 과장, 음영·그림자는 실행 때 그림에 구워 넣음. 다시 만들기: `tools/build_terrain.py`(원본 약 1GB 내려받음)
 - `assets/tb_*.jpg`, `video/help.mp4` — 동아 교과서·지도서 그림과 도움 영상
 - `assets/bg_hill.jpg`, `lander.png`, `rock.png` — ChatGPT 그림 도구로 제작
 - `fonts/` — Jua(제목), Gowun Dodum(본문)
